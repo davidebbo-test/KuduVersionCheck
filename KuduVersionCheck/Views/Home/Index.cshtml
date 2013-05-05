@@ -1,0 +1,23 @@
+﻿@model IEnumerable<KuduVersionCheck.Models.RegionEntry>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Index</title>
+</head>
+<body>
+    <div>
+        <ul>
+        @foreach (var regionEntry in Model)
+        {
+            <li>@regionEntry.Name: @regionEntry.CommitId</li>
+        }
+        </ul>
+    </div>
+</body>
+</html>
