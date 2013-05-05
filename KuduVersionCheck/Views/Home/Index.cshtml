@@ -1,9 +1,5 @@
 ﻿@model IEnumerable<KuduVersionCheck.Models.RegionEntry>
 
-@{
-    Layout = null;
-}
-
 <!DOCTYPE html>
 
 <html>
@@ -15,7 +11,7 @@
         <ul>
         @foreach (var regionEntry in Model)
         {
-            <li>@regionEntry.Name: @regionEntry.CommitId</li>
+            <li>@regionEntry.Name: <a href="https://github.com/WindowsAzure/kudu/commit/@regionEntry.CommitId">@regionEntry.CommitId</a></li>
         }
         </ul>
     </div>
