@@ -1,1 +1,16 @@
-﻿@System.IO.File.ReadAllText(@"d:\KuduService\wwwroot\commit.txt").Substring(0, 8)
+﻿@{
+    string kuduFolder;
+
+    if (Directory.Exists(@"d:\KuduService\wwwroot"))
+    {
+        kuduFolder = @"d:\KuduService\wwwroot";
+    }
+    else
+    {
+        kuduFolder = Directory.GetDirectories(@"D:\Program Files (x86)\SiteExtensions\Kudu").OrderByDescending(s => s).First();
+    }
+
+    string commitFile = Path.Combine(kuduFolder, "commit.txt");
+}
+
+@System.IO.File.ReadAllText(commitFile).Substring(0, 8)
