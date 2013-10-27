@@ -11,7 +11,7 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            string[] regions = { "bay-001", "ch1-001", "blu-001", "db3-001", "am2-001", "hk1-001" };
+            string[] regions = { "bay-001", "bay-003", "ch1-001", "blu-001", "blu-003", "db3-001", "db3-003", "am2-001", "hk1-001" };
 
             var client = new HttpClient();
             var commitIds = await Task.WhenAll(
