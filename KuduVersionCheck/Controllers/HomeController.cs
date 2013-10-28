@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using KuduVersionCheck.Models;
+using Newtonsoft.Json;
 
 namespace KuduVersionCheck.Controllers
 {
@@ -11,17 +12,23 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            string[] regions = { "bay-001", "bay-003", "ch1-001", "blu-001", "blu-003", "db3-001", "db3-003", "am2-001", "hk1-001" };
+            string[] stampNames = { "bay-001", "bay-003", "ch1-001", "blu-001", "blu-003", "db3-001", "db3-003", "am2-001", "hk1-001" };
 
             var client = new HttpClient();
-            var commitIds = await Task.WhenAll(
-                regions.Select(async region => {
-                    var response = await client.GetAsync(String.Format("http://kudu-{0}.azurewebsites.net/", region));
-                    return await response.Content.ReadAsStringAsync();
+            var stampEntries = await Task.WhenAll(
+                stampNames.Select(async stampName => {
+                    string testSite = String.Format("http://kudu-{0}.azurewebsites.net/", stampName);
+                    var response = await client.GetAsync(testSite);
+                    string responseString = await response.Content.ReadAsStringAsync();
+
+                    var stampEntry = JsonConvert.DeserializeObject<StampEntry>(responseString);
+                    stampEntry.TestSite = testSite;
+                    stampEntry.Name = stampName;
+                    return stampEntry;
                 }
             ));
 
-            return View(regions.Select((region, i) => new RegionEntry { Name = region, CommitId = commitIds[i].Trim() }));
+            return View(stampEntries);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KuduVersionCheck.Models.RegionEntry>
+﻿@model IEnumerable<KuduVersionCheck.Models.StampEntry>
 
 <!DOCTYPE html>
 
@@ -9,9 +9,14 @@
 <body>
     <div>
         <ul style="font-family: Courier New, monospace">
-        @foreach (var regionEntry in Model)
+        @foreach (var stampEntry in Model)
         {
-            <li>@regionEntry.Name: <a href="https://github.com/WindowsAzure/kudu/commit/@regionEntry.CommitId">@regionEntry.CommitId</a></li>
+            <li>
+                <a href="@stampEntry.TestSite" target="_blank">@stampEntry.Name</a>:
+                @stampEntry.StampVersion
+                kudu: @stampEntry.KuduVersion
+                <a href="https://github.com/WindowsAzure/kudu/commit/@stampEntry.CommitId" target="_blank">@stampEntry.CommitId</a>
+            </li>
         }
         </ul>
     </div>
