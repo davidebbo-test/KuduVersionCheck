@@ -12,16 +12,27 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            string[] stampNames = { "bay-001", "bay-003", "ch1-001", "blu-001", "blu-003", "db3-001", "db3-003", "am2-001", "hk1-001" };
+            string[] stampNames = { "bay-001", "bay-003", "ch1-001", "blu-001", "blu-003", "db3-001", "db3-003", "am2-001", "am2-003", "hk1-001" };
 
             var client = new HttpClient();
             var stampEntries = await Task.WhenAll(
                 stampNames.Select(async stampName => {
-                    string testSite = String.Format("http://kudu-{0}.azurewebsites.net/", stampName);
-                    var response = await client.GetAsync(testSite);
-                    string responseString = await response.Content.ReadAsStringAsync();
+                    StampEntry stampEntry;
 
-                    var stampEntry = JsonConvert.DeserializeObject<StampEntry>(responseString);
+                    string testSite = String.Format("http://kudu-{0}.azurewebsites.net/", stampName);
+
+                    try
+                    {
+                        var response = await client.GetAsync(testSite);
+                        string responseString = await response.Content.ReadAsStringAsync();
+
+                        stampEntry = JsonConvert.DeserializeObject<StampEntry>(responseString);
+                    }
+                    catch (Exception e)
+                    {
+                        stampEntry = new StampEntry() { CommitId = e.InnerException.Message };
+                    }
+
                     stampEntry.TestSite = testSite;
                     stampEntry.Name = stampName;
                     return stampEntry;
