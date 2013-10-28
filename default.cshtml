@@ -11,6 +11,14 @@
     }
 
     string commitFile = Path.Combine(kuduFolder, "commit.txt");
+    string commitId = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
+
+    string kuduAssemblyFile = Path.Combine(kuduFolder, "bin", "Kudu.Services.Web.dll");
+
+    var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(kuduAssemblyFile);
+    string kuduVersion = fileVersionInfo.FileVersion;
+
+    string stampVersion = "S" + kuduVersion.Split('.')[1];
 }
 
-@System.IO.File.ReadAllText(commitFile).Substring(0, 8)
+{ commit_id: "@commitId", kudu_version: "@kuduVersion", stamp_version: "@stampVersion" }
