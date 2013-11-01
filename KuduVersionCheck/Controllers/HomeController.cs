@@ -30,7 +30,12 @@ namespace KuduVersionCheck.Controllers
                     }
                     catch (Exception e)
                     {
-                        stampEntry = new StampEntry() { CommitId = e.InnerException.Message };
+                        if (e.InnerException != null)
+                        {
+                            e = e.InnerException;
+                        }
+
+                        stampEntry = new StampEntry() { CommitId = e.Message };
                     }
 
                     stampEntry.TestSite = testSite;

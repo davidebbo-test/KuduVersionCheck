@@ -21,5 +21,8 @@ namespace KuduVersionCheck.Models
 
         [DataMember(Name = "stamp_version")]
         public string StampVersion { get; set; }
+
+        [DataMember(Name = "install_time")]
+        public DateTime InstallTime { get; set; }
     }
 }
