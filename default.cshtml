@@ -12,6 +12,7 @@
 
     string commitFile = Path.Combine(kuduFolder, "commit.txt");
     string commitId = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
+    DateTime installTime = File.GetCreationTimeUtc(commitFile);
 
     string kuduAssemblyFile = Path.Combine(kuduFolder, "bin", "Kudu.Services.Web.dll");
 
@@ -21,4 +22,4 @@
     string stampVersion = "S" + kuduVersion.Split('.')[1];
 }
 
-{ commit_id: "@commitId", kudu_version: "@kuduVersion", stamp_version: "@stampVersion" }
+{ commit_id: "@commitId", kudu_version: "@kuduVersion", stamp_version: "@stampVersion", install_time: "@installTime" }
