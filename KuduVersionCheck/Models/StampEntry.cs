@@ -22,8 +22,8 @@ namespace KuduVersionCheck.Models
         [DataMember(Name = "monaco_version")]
         public string MonacoVersion { get; set; }
 
-        [DataMember(Name = "stamp_version")]
-        public string StampVersion { get; set; }
+        [DataMember(Name = "waws_version")]
+        public string WawsVersion { get; set; }
 
         [DataMember(Name = "install_time")]
         public DateTime InstallTime { get; set; }
