@@ -6,12 +6,19 @@
     string commitId = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
     DateTime installTime = File.GetCreationTimeUtc(commitFile);
 
-	string kuduVersion = Path.GetFileName(kuduFolder);
-
-    string stampVersion = "S" + kuduVersion.Split('.')[1];
+    string kuduVersion = Path.GetFileName(kuduFolder);
 
     string monacoFolder = Directory.GetDirectories(Path.Combine(siteExtFolder, "Monaco")).OrderByDescending(s => s).First();
-	string monacoVersion = Path.GetFileName(monacoFolder);
+    string monacoVersion = Path.GetFileName(monacoFolder);
+
+    var mwhAssembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+    var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
 }
 
-{ commit_id: "@commitId", kudu_version: "@kuduVersion", monaco_version: "@monacoVersion", stamp_version: "@stampVersion", install_time: "@installTime" }
+{
+    waws_version: "@fileVersionInfo.FileVersion",
+    kudu_version: "@kuduVersion",
+    commit_id: "@commitId",
+    monaco_version: "@monacoVersion",
+    install_time: "@installTime"
+}
