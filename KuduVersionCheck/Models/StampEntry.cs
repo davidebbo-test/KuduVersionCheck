@@ -19,6 +19,9 @@ namespace KuduVersionCheck.Models
         [DataMember(Name = "kudu_version")]
         public string KuduVersion { get; set; }
 
+        [DataMember(Name = "monaco_version")]
+        public string MonacoVersion { get; set; }
+
         [DataMember(Name = "stamp_version")]
         public string StampVersion { get; set; }
 
