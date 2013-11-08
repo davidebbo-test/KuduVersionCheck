@@ -1,25 +1,17 @@
 ﻿@{
-    string kuduFolder;
-
-    if (Directory.Exists(@"d:\KuduService\wwwroot"))
-    {
-        kuduFolder = @"d:\KuduService\wwwroot";
-    }
-    else
-    {
-        kuduFolder = Directory.GetDirectories(@"D:\Program Files (x86)\SiteExtensions\Kudu").OrderByDescending(s => s).First();
-    }
+    string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
+    string kuduFolder = Directory.GetDirectories(Path.Combine(siteExtFolder, "Kudu")).OrderByDescending(s => s).First();
 
     string commitFile = Path.Combine(kuduFolder, "commit.txt");
     string commitId = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
     DateTime installTime = File.GetCreationTimeUtc(commitFile);
 
-    string kuduAssemblyFile = Path.Combine(kuduFolder, "bin", "Kudu.Services.Web.dll");
-
-    var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(kuduAssemblyFile);
-    string kuduVersion = fileVersionInfo.FileVersion;
+	string kuduVersion = Path.GetFileName(kuduFolder);
 
     string stampVersion = "S" + kuduVersion.Split('.')[1];
+
+    string monacoFolder = Directory.GetDirectories(Path.Combine(siteExtFolder, "Monaco")).OrderByDescending(s => s).First();
+	string monacoVersion = Path.GetFileName(monacoFolder);
 }
 
-{ commit_id: "@commitId", kudu_version: "@kuduVersion", stamp_version: "@stampVersion", install_time: "@installTime" }
+{ commit_id: "@commitId", kudu_version: "@kuduVersion", monaco_version: "@monacoVersion", stamp_version: "@stampVersion", install_time: "@installTime" }
