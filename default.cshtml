@@ -16,6 +16,10 @@
     props["commit_id"] = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
     props["monaco_version"] = Path.GetFileName(monacoFolder);
     props["install_time"] = File.GetCreationTimeUtc(commitFile).ToString();
+
+    string rootWebFile = Environment.ExpandEnvironmentVariables(@"%TMP%\..\config\rootweb.config");
+    string rootWebContent = File.ReadAllText(rootWebFile);
+    props["AzureBlobTraceListener"] = rootWebContent.Contains("AzureBlobTraceListener").ToString();
 }
 
 {
