@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using KuduVersionCheck.Models;
-using Newtonsoft.Json;
 
 namespace KuduVersionCheck.Controllers
 {
@@ -17,16 +16,14 @@ namespace KuduVersionCheck.Controllers
             var client = new HttpClient();
             var stampEntries = await Task.WhenAll(
                 stampNames.Select(async stampName => {
-                    StampEntry stampEntry;
-
                     string testSite = String.Format("http://kudu-{0}.azurewebsites.net/", stampName);
+
+                    var stampEntry = new StampEntry { TestSite = testSite, Name = stampName };
 
                     try
                     {
                         var response = await client.GetAsync(testSite);
-                        string responseString = await response.Content.ReadAsStringAsync();
-
-                        stampEntry = JsonConvert.DeserializeObject<StampEntry>(responseString);
+                        stampEntry.DataString = await response.Content.ReadAsStringAsync();
                     }
                     catch (Exception e)
                     {
@@ -35,11 +32,12 @@ namespace KuduVersionCheck.Controllers
                             e = e.InnerException;
                         }
 
-                        stampEntry = new StampEntry() { CommitId = e.Message };
+                        stampEntry.DataString = String.Format("{{ error={0} }}", e.Message);
                     }
 
-                    stampEntry.TestSite = testSite;
-                    stampEntry.Name = stampName;
+                    // Trim edge characters to make it more readable
+                    stampEntry.DataString = stampEntry.DataString.Trim(new char[] { ' ', '\r', '\n', '{', '}', ',' });
+
                     return stampEntry;
                 }
             ));

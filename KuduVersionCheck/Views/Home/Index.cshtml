@@ -13,11 +13,7 @@
         {
             <li>
                 <a href="@stampEntry.TestSite" target="_blank">@stampEntry.Name</a>:
-                @stampEntry.WawsVersion
-                kudu: @stampEntry.KuduVersion
-                (<a href="https://github.com/WindowsAzure/kudu/commit/@stampEntry.CommitId" target="_blank">@stampEntry.CommitId</a>)
-                monaco: @stampEntry.MonacoVersion
-                Deployed: @stampEntry.InstallTime
+                @stampEntry.DataString
             </li>
         }
         </ul>
