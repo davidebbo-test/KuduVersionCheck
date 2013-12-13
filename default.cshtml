@@ -1,6 +1,6 @@
 ﻿@{
     var props = new Dictionary<string, string>();
-    
+
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
     string kuduFolder = Directory.GetDirectories(Path.Combine(siteExtFolder, "Kudu")).OrderByDescending(s => s).First();
 
@@ -11,15 +11,11 @@
     var mwhAssembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
 
-    props["waws_version"] = fileVersionInfo.FileVersion;
-    props["kudu_version"] = Path.GetFileName(kuduFolder);
-    props["commit_id"] = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
-    props["monaco_version"] = Path.GetFileName(monacoFolder);
-    props["install_time"] = File.GetCreationTimeUtc(commitFile).ToString();
-
-    string rootWebFile = Environment.ExpandEnvironmentVariables(@"%TMP%\..\config\rootweb.config");
-    string rootWebContent = File.ReadAllText(rootWebFile);
-    props["AzureBlobTraceListener"] = rootWebContent.Contains("AzureBlobTraceListener").ToString();
+    props["waws"] = fileVersionInfo.FileVersion;
+    props["kudu"] = Path.GetFileName(kuduFolder);
+    props["commit"] = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
+    props["monaco"] = Path.GetFileName(monacoFolder);
+    props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
 }
 
 {
