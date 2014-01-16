@@ -18,17 +18,12 @@
 }
 
 @{
-    string kuduFolder = Directory.GetDirectories(Path.Combine(siteExtFolder, "Kudu")).OrderByDescending(s => s).First();
-
-    string commitFile = Path.Combine(kuduFolder, "commit.txt");
-    string commitId = System.IO.File.ReadAllText(commitFile).Substring(0, 8);
-
     var mwhAssembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
 
     props["waws"] = fileVersionInfo.FileVersion;
-    props["kudu"] = String.Format("{0} ({1})", Path.GetFileName(kuduFolder), commitId);
 
+    AddSiteExtension("kudu", "kudu");
     AddSiteExtension("monaco", "Monaco");
     AddSiteExtension("zumo", "MobileServicesDotNet");
     AddSiteExtension("sb", "AzureJobs");
