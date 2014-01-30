@@ -11,7 +11,7 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            string[] stampNames = { "bay-001", "bay-003", "bay-005", "ch1-001", "blu-001", "blu-003", "blu-005", "db3-001", "db3-003", "db3-005", "am2-001", "am2-003", "hk1-001" };
+            string[] stampNames = { "bay-001", "bay-003", "bay-005", "ch1-001", "blu-001", "blu-003", "blu-005", "db3-001", "db3-003", "db3-005", "am2-001", "am2-003", "hk1-001", "hk1-003" };
 
             var client = new HttpClient();
             var stampEntries = await Task.WhenAll(
