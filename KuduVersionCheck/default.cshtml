@@ -2,12 +2,35 @@
     Dictionary<string, string> props = new Dictionary<string, string>();
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
 
+    class FancyVersion : IComparable<FancyVersion>
+    {
+        public FancyVersion(string ver)
+        {
+            VersionString = ver;
+        }
+
+        public string VersionString { get; set; }
+
+        public int CompareTo(FancyVersion other)
+        {
+            try
+            {
+                return Semver.SemVersion.Parse(VersionString).CompareTo(Semver.SemVersion.Parse(other.VersionString));
+            }
+            catch
+            {
+                // Fall back to .net version for cases when there are 4 chunks
+                return (new Version(VersionString)).CompareTo(new Version(other.VersionString));
+            }
+        }
+    }
+
     void AddSiteExtension(string name, string folderName)
     {
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
-            string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => s).First();
+            string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
             props[name] = Path.GetFileName(versionFolder);
         }
         else
