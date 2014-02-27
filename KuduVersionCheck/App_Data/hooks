@@ -1,0 +1,7 @@
+[
+  {
+    "id": "635290775776035130",
+    "event": "TriggerDeploy",
+    "url": "https://kudu-blu-001.scm.azurewebsites.net/deploy"
+  }
+]

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using KuduVersionCheck.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KuduVersionCheck.Controllers
 {
@@ -11,7 +14,7 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index()
         {
-            string[] stampNames = { "bay-001", "bay-003", "bay-005", "ch1-001", "blu-001", "blu-003", "blu-005", "blu-007", "db3-001", "db3-003", "db3-005", "am2-001", "am2-003", "am2-005", "hk1-001", "hk1-003", "cq1-001", "kw1-001", "os1-001" };
+            IEnumerable<string> stampNames = GetStampNames();
 
             var client = new HttpClient();
             var stampEntries = await Task.WhenAll(
@@ -43,6 +46,29 @@ namespace KuduVersionCheck.Controllers
             ));
 
             return View(stampEntries);
+        }
+
+        private IEnumerable<string> GetStampNames()
+        {
+            string hookPath = Environment.ExpandEnvironmentVariables(@"%HOME%\site\deployments\hooks");
+            if (!System.IO.File.Exists(hookPath))
+            {
+                hookPath = Server.MapPath("~/App_Data/hooks");
+                if (!System.IO.File.Exists(hookPath))
+                {
+                    throw new Exception("Can't find hooks file " + hookPath);
+                }
+            }
+
+            string hooksContent = System.IO.File.ReadAllText(hookPath);
+            JArray hooks = JArray.Parse(hooksContent);
+            return hooks.Select(hook =>
+            {
+                Uri uri = new Uri(hook.SelectToken("url").ToString());
+
+                // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
+                return uri.Host.Split('.')[0].Substring(5);
+            });
         }
     }
 }
