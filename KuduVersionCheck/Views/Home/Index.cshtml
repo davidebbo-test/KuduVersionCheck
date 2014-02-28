@@ -20,7 +20,7 @@
             @foreach (var entry in Model.Entries)
             {
                 <tr>
-                    <td><a href="@entry.TestSiteUrl" target="_blank">@entry.Name</a></td>
+                    <td><a href="@entry.TestSiteUrl" target="_blank">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
                     @if (Model.ShowConsole) { <td><a href="@entry.ConsoleUrl" target="_blank">run</a></td> }
                     @foreach (var column in Model.Columns)
                     {

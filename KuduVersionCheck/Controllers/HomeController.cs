@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -41,8 +42,14 @@ namespace KuduVersionCheck.Controllers
 
             var entry = new StampEntry();
 
+            // waws-prod-blu-001.cloudapp.net --> blu-001
+            IPHostEntry host = Dns.GetHostEntry(uri.Host);
+            entry.Name = host.HostName.Substring(10, 7);
+
+            // Make sure it matches the test site name
             // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
-            entry.Name = uri.Host.Split('.')[0].Substring(5);
+            string expectedName = uri.Host.Split('.')[0].Substring(5);
+            if (entry.Name != expectedName) entry.Mismatch = true;
 
             entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", entry.Name);
 
