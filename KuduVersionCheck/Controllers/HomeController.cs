@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,43 +13,59 @@ namespace KuduVersionCheck.Controllers
 {
     public class HomeController : AsyncController
     {
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string mode)
         {
-            IEnumerable<string> stampNames = GetStampNames();
+            // Get the secret key that shows the Kudu urls
+            ViewBag.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
-            var client = new HttpClient();
-            var stampEntries = await Task.WhenAll(
-                stampNames.Select(async stampName => {
-                    string testSite = String.Format("http://kudu-{0}.azurewebsites.net/", stampName);
-
-                    var stampEntry = new StampEntry { TestSite = testSite, Name = stampName };
-
-                    try
-                    {
-                        var response = await client.GetAsync(testSite);
-                        stampEntry.DataString = await response.Content.ReadAsStringAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        if (e.InnerException != null)
-                        {
-                            e = e.InnerException;
-                        }
-
-                        stampEntry.DataString = String.Format("{{ error={0} }}", e.Message);
-                    }
-
-                    // Trim edge characters to make it more readable
-                    stampEntry.DataString = stampEntry.DataString.Trim(new char[] { ' ', '\r', '\n', '{', '}', ',' });
-
-                    return stampEntry;
-                }
-            ));
-
-            return View(stampEntries);
+            return View(await GetStampEntriesAsync());
         }
 
-        private IEnumerable<string> GetStampNames()
+        private async Task<IEnumerable<StampEntry>> GetStampEntriesAsync()
+        {
+            return await Task.WhenAll(GetDeployUrls().Select(url => GetStampEntryAsync(url)));
+        }
+
+        private async Task<StampEntry> GetStampEntryAsync(string url)
+        {
+            var uri = new Uri(url);
+
+            var entry = new StampEntry();
+
+            // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
+            entry.Name = uri.Host.Split('.')[0].Substring(5);
+
+            entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", entry.Name);
+
+            entry.DataString = await RequestSiteContent(entry.TestSiteUrl);
+
+            entry.ConsoleUrl = url.Replace("/deploy", "/DebugConsole");
+
+            return entry;
+        }
+
+        private async Task<string> RequestSiteContent(string testSite)
+        {
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var response = await client.GetAsync(testSite);
+                    return await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException != null)
+                    {
+                        e = e.InnerException;
+                    }
+
+                    return String.Format("{{ error={0} }}", e.Message);
+                }
+            }
+        }
+
+        private IEnumerable<string> GetDeployUrls()
         {
             string hookPath = Environment.ExpandEnvironmentVariables(@"%HOME%\site\deployments\hooks");
             if (!System.IO.File.Exists(hookPath))
@@ -62,13 +79,7 @@ namespace KuduVersionCheck.Controllers
 
             string hooksContent = System.IO.File.ReadAllText(hookPath);
             JArray hooks = JArray.Parse(hooksContent);
-            return hooks.Select(hook =>
-            {
-                Uri uri = new Uri(hook.SelectToken("url").ToString());
-
-                // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
-                return uri.Host.Split('.')[0].Substring(5);
-            });
+            return hooks.Select(hook => hook.SelectToken("url").ToString());
         }
     }
 }

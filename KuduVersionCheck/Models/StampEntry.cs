@@ -3,9 +3,8 @@
     public class StampEntry
     {
         public string Name { get; set; }
-
-        public string TestSite { get; set; }
-
+        public string TestSiteUrl { get; set; }
         public string DataString { get; set; }
+        public string ConsoleUrl { get; set; }
     }
 }

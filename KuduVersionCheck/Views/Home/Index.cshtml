@@ -12,7 +12,7 @@
         @foreach (var stampEntry in Model)
         {
             <li>
-                <a href="@stampEntry.TestSite" target="_blank">@stampEntry.Name</a>:
+                <a href="@(ViewBag.ShowConsole ? stampEntry.ConsoleUrl : stampEntry.TestSiteUrl)" target="_blank">@stampEntry.Name</a>:
                 @stampEntry.DataString
             </li>
         }
