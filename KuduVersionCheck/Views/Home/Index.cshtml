@@ -11,6 +11,7 @@
         <table border="1" style="font-family: Courier New, monospace">
             <tr>
                 <th>Site</th>
+                @if (Model.ShowConsole) { <th>Kudu</th> }
                 @foreach (var column in Model.Columns)
                 {
                     <th>@column</th>
@@ -19,7 +20,8 @@
             @foreach (var entry in Model.Entries)
             {
                 <tr>
-                    <td><a href="@(Model.ShowConsole ? entry.ConsoleUrl : entry.TestSiteUrl)" target="_blank">@entry.Name</a></td>
+                    <td><a href="@entry.TestSiteUrl" target="_blank">@entry.Name</a></td>
+                    @if (Model.ShowConsole) { <td><a href="@entry.ConsoleUrl" target="_blank">run</a></td> }
                     @foreach (var column in Model.Columns)
                     {
                         string val = "";
