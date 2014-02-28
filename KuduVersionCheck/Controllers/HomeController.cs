@@ -21,7 +21,7 @@ namespace KuduVersionCheck.Controllers
             // Get the secret key that shows the Kudu urls
             viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
-            viewModel.Entries = await GetStampEntriesAsync();
+            viewModel.Entries = (await GetStampEntriesAsync()).OrderBy(e => e.Name);
 
             // Find the first non-error entry to get the columns
             var entry = viewModel.Entries.FirstOrDefault(e => !e.Data.ContainsKey("Error"));
