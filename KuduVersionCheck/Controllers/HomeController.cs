@@ -51,7 +51,7 @@ namespace KuduVersionCheck.Controllers
             string expectedName = uri.Host.Split('.')[0].Substring(5);
             if (entry.Name != expectedName) entry.Mismatch = true;
 
-            entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", entry.Name);
+            entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", expectedName);
 
             entry.Data = await RequestSiteData(entry.TestSiteUrl);
 
