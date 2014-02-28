@@ -115,6 +115,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\StampEntriesViewModel.cs" />
     <Compile Include="Models\StampEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

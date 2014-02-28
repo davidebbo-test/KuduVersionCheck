@@ -15,10 +15,19 @@ namespace KuduVersionCheck.Controllers
     {
         public async Task<ActionResult> Index(string mode)
         {
-            // Get the secret key that shows the Kudu urls
-            ViewBag.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
+            var viewModel = new StampEntriesViewModel();
 
-            return View(await GetStampEntriesAsync());
+            // Get the secret key that shows the Kudu urls
+            viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
+
+            viewModel.Entries = await GetStampEntriesAsync();
+
+            // Find the first non-error entry to get the columns
+            var entry = viewModel.Entries.FirstOrDefault(e => !e.Data.ContainsKey("Error"));
+
+            viewModel.Columns = entry.Data.Keys;
+
+            return View(viewModel);
         }
 
         private async Task<IEnumerable<StampEntry>> GetStampEntriesAsync()
@@ -37,21 +46,25 @@ namespace KuduVersionCheck.Controllers
 
             entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", entry.Name);
 
-            entry.DataString = await RequestSiteContent(entry.TestSiteUrl);
+            entry.Data = await RequestSiteData(entry.TestSiteUrl);
 
             entry.ConsoleUrl = url.Replace("/deploy", "/DebugConsole");
 
             return entry;
         }
 
-        private async Task<string> RequestSiteContent(string testSite)
+        private async Task<IDictionary<string,string>> RequestSiteData(string testSite)
         {
             using (var client = new HttpClient())
             {
                 try
                 {
                     var response = await client.GetAsync(testSite);
-                    return await response.Content.ReadAsStringAsync();
+                    string dataString = await response.Content.ReadAsStringAsync();
+
+                    IDictionary<string, JToken> token = JObject.Parse(dataString);
+
+                    return token.ToDictionary(entry => entry.Key, entry => entry.Value.ToString());
                 }
                 catch (Exception e)
                 {
@@ -60,7 +73,7 @@ namespace KuduVersionCheck.Controllers
                         e = e.InnerException;
                     }
 
-                    return String.Format("{{ error={0} }}", e.Message);
+                    return new Dictionary<string, string>() { { "Error", e.Message } };
                 }
             }
         }

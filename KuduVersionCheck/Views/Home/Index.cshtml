@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KuduVersionCheck.Models.StampEntry>
+﻿@model KuduVersionCheck.Models.StampEntriesViewModel
 
 <!DOCTYPE html>
 
@@ -8,15 +8,27 @@
 </head>
 <body>
     <div>
-        <ul style="font-family: Courier New, monospace">
-        @foreach (var stampEntry in Model)
-        {
-            <li>
-                <a href="@(ViewBag.ShowConsole ? stampEntry.ConsoleUrl : stampEntry.TestSiteUrl)" target="_blank">@stampEntry.Name</a>:
-                @stampEntry.DataString
-            </li>
-        }
-        </ul>
+        <table border="1" style="font-family: Courier New, monospace">
+            <tr>
+                <th>Site</th>
+                @foreach (var column in Model.Columns)
+                {
+                    <th>@column</th>
+                }
+            </tr>
+            @foreach (var entry in Model.Entries)
+            {
+                <tr>
+                    <td><a href="@(Model.ShowConsole ? entry.ConsoleUrl : entry.TestSiteUrl)" target="_blank">@entry.Name</a></td>
+                    @foreach (var column in Model.Columns)
+                    {
+                        string val = "";
+                        entry.Data.TryGetValue(column, out val);
+                        <td>@val</td>
+                    }
+                </tr>
+            }
+        </table>
     </div>
 </body>
 </html>
