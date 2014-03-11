@@ -21,7 +21,7 @@
                     <th>@column</th>
                 }
             </tr>
-            @foreach (var entry in group)
+            @foreach (var entry in group.OrderBy(e => e.Name))
             {
                 <tr>
                     <td><a href="@entry.TestSiteUrl" target="_blank">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
