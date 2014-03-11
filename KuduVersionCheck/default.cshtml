@@ -43,8 +43,11 @@
 @{
     var mwhAssembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
-
     props["waws"] = fileVersionInfo.FileVersion;
+
+    var diagAssembly = System.Reflection.Assembly.Load("Microsoft.WindowsAzure.Websites.Diagnostics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+    var diagVersionInfo = diagAssembly.GetReferencedAssemblies().First(a => a.Name.Contains("Storage")).Version;
+    props["diag"] = diagVersionInfo.ToString();
 
     AddSiteExtension("kudu", "kudu");
     AddSiteExtension("monaco", "Monaco");
