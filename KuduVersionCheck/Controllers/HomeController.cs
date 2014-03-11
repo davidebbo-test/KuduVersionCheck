@@ -21,10 +21,11 @@ namespace KuduVersionCheck.Controllers
             // Get the secret key that shows the Kudu urls
             viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
-            viewModel.Entries = (await GetStampEntriesAsync()).OrderBy(e => e.Name);
+            IEnumerable<StampEntry> stampEntries = await GetStampEntriesAsync();
+            viewModel.Groups = stampEntries.GroupBy(e => e.Environment);
 
             // Find the first non-error entry to get the columns
-            var entry = viewModel.Entries.FirstOrDefault(e => !e.Data.ContainsKey("Error"));
+            var entry = stampEntries.FirstOrDefault(e => !e.Data.ContainsKey("Error"));
 
             viewModel.Columns = entry.Data.Keys;
 
@@ -44,14 +45,18 @@ namespace KuduVersionCheck.Controllers
 
             // waws-prod-blu-001.cloudapp.net --> blu-001
             IPHostEntry host = Dns.GetHostEntry(uri.Host);
-            entry.Name = host.HostName.Substring(10, 7);
+            string subDomain = host.HostName.Split('.')[0];
+            entry.Name = subDomain.Substring(subDomain.Length - 7);
+            entry.Environment = subDomain.Substring(0, subDomain.Length - 8);
 
             // Make sure it matches the test site name
             // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
             string expectedName = uri.Host.Split('.')[0].Substring(5);
             if (entry.Name != expectedName) entry.Mismatch = true;
 
-            entry.TestSiteUrl = String.Format("http://kudu-{0}.azurewebsites.net/", expectedName);
+            // Yank the .scm token
+            string siteHostName = uri.Host.Replace(".scm.", ".");
+            entry.TestSiteUrl = String.Format("http://{0}/", siteHostName);
 
             entry.Data = await RequestSiteData(entry.TestSiteUrl);
 

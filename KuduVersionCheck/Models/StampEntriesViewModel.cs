@@ -8,7 +8,7 @@ namespace KuduVersionCheck.Models
     public class StampEntriesViewModel
     {
         public IEnumerable<string> Columns { get; set; }
-        public IEnumerable<StampEntry> Entries { get; set; }
+        public IEnumerable<IGrouping<string, StampEntry>> Groups { get; set; }
         public bool ShowConsole { get; set; }
     }
 }
