@@ -55,11 +55,8 @@
     AddSiteExtension("sb", "AzureJobs");
 
     props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
+
+    Response.ContentType = "application/json";
 }
 
-{
-    @foreach (var pair in props)
-    {
-    <text>@pair.Key: "@pair.Value", </text>
-    }
-}
+@Html.Raw(Json.Encode(props))
