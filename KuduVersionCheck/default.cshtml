@@ -25,17 +25,17 @@
         }
     }
 
-    void AddSiteExtension(string name, string folderName)
+    void AddSiteExtension(string folderName)
     {
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
             string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
-            props[name] = Path.GetFileName(versionFolder);
+            props[folderName] = Path.GetFileName(versionFolder);
         }
         else
         {
-            props[name] = "none";
+            props[folderName] = "none";
         }
     }
 }
@@ -49,10 +49,10 @@
     var diagVersionInfo = diagAssembly.GetReferencedAssemblies().First(a => a.Name.Contains("Storage")).Version;
     props["diag"] = diagVersionInfo.ToString();
 
-    AddSiteExtension("kudu", "kudu");
-    AddSiteExtension("monaco", "Monaco");
-    AddSiteExtension("zumo", "MobileServicesDotNet");
-    AddSiteExtension("sb", "AzureJobs");
+    AddSiteExtension("kudu");
+    AddSiteExtension("Monaco");
+    AddSiteExtension("MobileServicesDotNet");
+    AddSiteExtension("AzureJobs");
 
     props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
 
