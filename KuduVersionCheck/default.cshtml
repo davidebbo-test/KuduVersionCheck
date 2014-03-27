@@ -19,8 +19,16 @@
             }
             catch
             {
+            }
+
+            try
+            {
                 // Fall back to .net version for cases when there are 4 chunks
                 return (new Version(VersionString)).CompareTo(new Version(other.VersionString));
+            }
+            catch
+            {
+                return 0;
             }
         }
     }
