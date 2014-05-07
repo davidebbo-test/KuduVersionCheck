@@ -33,17 +33,19 @@
         }
     }
 
-    void AddSiteExtension(string folderName)
+    void AddSiteExtension(string folderName, string name = null)
     {
+        name = name ?? folderName;
+        
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
             string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
-            props[folderName] = Path.GetFileName(versionFolder);
+            props[name] = Path.GetFileName(versionFolder);
         }
         else
         {
-            props[folderName] = "none";
+            props[name] = "none";
         }
     }
 }
@@ -55,8 +57,8 @@
 
     AddSiteExtension("kudu");
     AddSiteExtension("Monaco");
-    AddSiteExtension("MobileServicesDotNet");
-    AddSiteExtension("MobileServicesNode");
+    AddSiteExtension("MobileServicesDotNet", "Mobile.Net");
+    AddSiteExtension("MobileServicesNode", "MobileNode");
     AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
 
