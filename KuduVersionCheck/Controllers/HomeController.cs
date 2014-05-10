@@ -60,7 +60,7 @@ namespace KuduVersionCheck.Controllers
 
             entry.Data = await RequestSiteData(entry.TestSiteUrl);
 
-            entry.ConsoleUrl = url.Replace("/deploy", "/DebugConsole");
+            entry.ConsoleUrl = url.Replace("/deploy", "/basicauth");
 
             return entry;
         }
