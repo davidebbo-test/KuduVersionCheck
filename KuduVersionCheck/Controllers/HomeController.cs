@@ -34,7 +34,23 @@ namespace KuduVersionCheck.Controllers
 
         private async Task<IEnumerable<StampEntry>> GetStampEntriesAsync()
         {
-            return await Task.WhenAll(GetDeployUrls().Select(url => GetStampEntryAsync(url)));
+            return await Task.WhenAll(GetDeployUrls().Select(url => GetStampEntryAsyncWithFallbackAsync(url)));
+        }
+
+        private async Task<StampEntry> GetStampEntryAsyncWithFallbackAsync(string url)
+        {
+            try
+            {
+                return await GetStampEntryAsync(url);
+            }
+            catch (Exception e)
+            {
+                return new StampEntry()
+                {
+                    Name = new Uri(url).Host,
+                    Data = new Dictionary<string, string>() { { "kudu", e.Message } }
+                };
+            }
         }
 
         private async Task<StampEntry> GetStampEntryAsync(string url)
