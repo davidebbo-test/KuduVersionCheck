@@ -1,6 +1,8 @@
 ﻿@functions {
     Dictionary<string, string> props = new Dictionary<string, string>();
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
+    string nodeFolder = @"D:\Program Files (x86)\nodejs";
+    string npmFolder = @"D:\Program Files (x86)\npm";
 
     class FancyVersion : IComparable<FancyVersion>
     {
@@ -48,6 +50,12 @@
             props[name] = "none";
         }
     }
+
+    string GetLatestVersionFromFolder(string folder)
+    {
+        string highestVersionFolder = Directory.GetDirectories(folder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
+        return Path.GetFileName(highestVersionFolder);
+    }
 }
 
 @{
@@ -61,6 +69,9 @@
     AddSiteExtension("MobileServicesNode");
     AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
+
+    props["Node"] = GetLatestVersionFromFolder(nodeFolder);
+    props["npm"] = GetLatestVersionFromFolder(npmFolder);
 
     // Time is not that useful, so yanking it
     //props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
