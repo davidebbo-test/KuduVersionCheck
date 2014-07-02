@@ -34,6 +34,7 @@
                 {
                     <th>@GetColumnDisplayName(column)</th>
                 }
+                <th>Time</th>
             </tr>
             @foreach (var entry in group.OrderBy(e => e.Name))
             {
@@ -46,6 +47,7 @@
                         entry.Data.TryGetValue(column, out val);
                         <td>@val</td>
                     }
+                    <td>@((int)entry.Duration.TotalMilliseconds)</td>
                 </tr>
             }
         </table>

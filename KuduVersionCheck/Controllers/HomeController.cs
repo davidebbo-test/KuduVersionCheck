@@ -74,7 +74,9 @@ namespace KuduVersionCheck.Controllers
             string siteHostName = uri.Host.Replace(".scm.", ".");
             entry.TestSiteUrl = String.Format("http://{0}/", siteHostName);
 
+            DateTime start = DateTime.Now;
             entry.Data = await RequestSiteData(entry.TestSiteUrl);
+            entry.Duration = DateTime.Now - start;
 
             entry.ConsoleUrl = url.Replace("/deploy", "/basicauth");
 
