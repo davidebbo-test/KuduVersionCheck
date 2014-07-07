@@ -62,13 +62,30 @@ namespace KuduVersionCheck.Controllers
             // waws-prod-blu-001.cloudapp.net --> blu-001
             IPHostEntry host = Dns.GetHostEntry(uri.Host);
             string subDomain = host.HostName.Split('.')[0];
-            entry.Name = subDomain.Substring(subDomain.Length - 7);
-            entry.Environment = subDomain.Substring(0, subDomain.Length - 8);
+
+            // e.g. waws-prod-msfthk1-901 -> msfthk1-901
+            string[] segments = subDomain.Split('-');
+            entry.Name = segments[segments.Length - 2] + '-' + segments[segments.Length - 1];
+
+            if (subDomain.Contains("msft"))
+            {
+                entry.Environment = "msft";
+            }
+            else
+            {
+                entry.Environment = subDomain.Substring(0, subDomain.Length - entry.Name.Length - 1);
+            }
 
             // Make sure it matches the test site name
             // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
             string expectedName = uri.Host.Split('.')[0].Substring(5);
             if (entry.Name != expectedName) entry.Mismatch = true;
+
+            // Don't show the msft prefix in the site name to keep things short
+            if (entry.Name.StartsWith("msft"))
+            {
+                entry.Name = entry.Name.Substring(4);
+            }
 
             // Yank the .scm token
             string siteHostName = uri.Host.Replace(".scm.", ".");
@@ -89,6 +106,7 @@ namespace KuduVersionCheck.Controllers
             {
                 try
                 {
+                    client.Timeout = TimeSpan.FromSeconds(10);
                     var response = await client.GetAsync(testSite);
                     string dataString = await response.Content.ReadAsStringAsync();
 
