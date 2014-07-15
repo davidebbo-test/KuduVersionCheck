@@ -3,5 +3,20 @@
     "id": "635290775776035130",
     "event": "TriggerDeploy",
     "url": "https://kudu-blu-001.scm.azurewebsites.net/deploy"
+  },
+  {
+    "id": "635290775776035131",
+    "event": "TriggerDeploy",
+    "url": "https://kudu-cq1-001.scm.azurewebsites.net/deploy"
+  },
+  {
+    "id": "635290775776035132",
+    "event": "TriggerDeploy",
+    "url": "https://kudu-am2-001.scm.azurewebsites.net/deploy"
+  },
+  {
+    "id": "635290775776035133",
+    "event": "TriggerDeploy",
+    "url": "https://kudu-bay-001.scm.azurewebsites.net/deploy"
   }
 ]

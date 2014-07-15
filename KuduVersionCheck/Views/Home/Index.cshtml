@@ -39,15 +39,15 @@
             @foreach (var entry in group.OrderBy(e => e.Name))
             {
                 <tr>
-                    <td><a href="@entry.TestSiteUrl" target="_blank">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
+                    <td style="@entry.Style"><a style="@entry.Style" href="@entry.TestSiteUrl" target="_blank">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
                     @if (Model.ShowConsole) { <td><a href="@entry.ConsoleUrl" target="_blank">run</a></td> }
                     @foreach (var column in Model.Columns)
                     {
                         string val = "";
                         entry.Data.TryGetValue(column, out val);
-                        <td>@val</td>
+                        <td style="@entry.Style">@val</td>
                     }
-                    <td>@((int)entry.Duration.TotalMilliseconds)</td>
+                    <td style="@entry.Style">@((int)entry.Duration.TotalMilliseconds)</td>
                 </tr>
             }
         </table>

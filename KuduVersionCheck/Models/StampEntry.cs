@@ -12,5 +12,6 @@ namespace KuduVersionCheck.Models
         public IDictionary<string, string> Data { get; set; }
         public string ConsoleUrl { get; set; }
         public TimeSpan Duration { get; set; }
+        public string Style { get; set; }
     }
 }

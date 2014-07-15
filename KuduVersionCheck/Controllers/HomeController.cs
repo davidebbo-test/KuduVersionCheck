@@ -21,7 +21,7 @@ namespace KuduVersionCheck.Controllers
             // Get the secret key that shows the Kudu urls
             viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
-            IEnumerable<StampEntry> stampEntries = await GetStampEntriesAsync();
+            IEnumerable<StampEntry> stampEntries = ApplyStyle(await GetStampEntriesAsync());
             viewModel.Groups = stampEntries.GroupBy(e => e.Environment);
 
             // Find the first non-error entry to get the columns
@@ -141,6 +141,56 @@ namespace KuduVersionCheck.Controllers
             string hooksContent = System.IO.File.ReadAllText(hookPath);
             JArray hooks = JArray.Parse(hooksContent);
             return hooks.Select(hook => hook.SelectToken("url").ToString());
+        }
+
+        private IEnumerable<StampEntry> ApplyStyle(IEnumerable<StampEntry> stampEntries)
+        {
+            // For error, color red.
+            var result = stampEntries.Select(e =>
+            {
+                if (e.Data.ContainsKey("Error"))
+                {
+                    e.Style = "background-color: red; color: white";
+                }
+
+                return e;
+            });
+
+            // Pick cq1 as latest
+            var cq1 = result.FirstOrDefault(e => e.Name.Equals("cq1-001", StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
+            if (cq1 == null)
+            {
+                return stampEntries;
+            }
+
+            int green = GetColorKey(cq1);
+
+            // Any matching cq1, color green.
+            return result.Select(e => 
+            {
+                if (String.IsNullOrEmpty(e.Style) && GetColorKey(e) == green)
+                {
+                    e.Style = "background-color: green; color: white"; 
+                }
+
+                return e;
+            });
+        }
+
+        private int GetColorKey(StampEntry entry)
+        {
+            int colorKey = 0;
+
+            foreach (var pair in entry.Data.OrderBy(p => p.Key))
+            {
+                // excluding waws version as it may vary between workers
+                if (!pair.Key.Equals("waws", StringComparison.OrdinalIgnoreCase))
+                {
+                    colorKey ^= pair.Value.GetHashCode();
+                }
+            }
+
+            return colorKey;
         }
     }
 }
