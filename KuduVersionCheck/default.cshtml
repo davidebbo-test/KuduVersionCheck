@@ -73,9 +73,11 @@
 
     props["Node"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
+
+    string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
+    string appHostContent = File.ReadAllText(appHostPath);
     
-    var info = new FileInfo(@"D:\Program Files (x86)\iisnode\interceptor.js");
-    props["interceptor"] = info.Length.ToString();
+    props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
 
     // Time is not that useful, so yanking it
     //props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
