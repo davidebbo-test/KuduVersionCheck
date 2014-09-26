@@ -25,7 +25,7 @@
     @foreach (var group in Model.Groups)
     {
     <div>
-        <h2>@group.Key</h2>
+        <h2>@group.Key (@group.Count())</h2>
         <table id="box-table-a">
             <tr>
                 <th>Stamp</th>
