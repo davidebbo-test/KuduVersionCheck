@@ -79,9 +79,10 @@
     string appHostContent = File.ReadAllText(appHostPath);
     
     props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
+    props["PHP55"] = (appHostContent.Contains(@"PHP55_via_FastCGI") && appHostContent.Contains(@"D:\Program Files (x86)\PHP\v5.5\php-cgi.exe")).ToString();
 
-    var info = new FileInfo(@"D:\Program Files\iisnode\interceptor.js");
-    props["interceptor"] = info.Length.ToString();
+    //var info = new FileInfo(@"D:\Program Files\iisnode\interceptor.js");
+    //props["interceptor"] = info.Length.ToString();
 
     // Time is not that useful, so yanking it
     //props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
