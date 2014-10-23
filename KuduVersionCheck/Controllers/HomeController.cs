@@ -65,7 +65,12 @@ namespace KuduVersionCheck.Controllers
 
             // e.g. waws-prod-msfthk1-901 -> msfthk1-901
             string[] segments = subDomain.Split('-');
-            entry.Name = segments[segments.Length - 2] + '-' + segments[segments.Length - 1];
+            entry.Name = uri.Host.Split('.')[0].Substring(5);
+
+            // Make sure the dns matches the test site name
+            // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
+            string dnsSiteName = segments[segments.Length - 2] + '-' + segments[segments.Length - 1];
+            if (entry.Name != dnsSiteName) entry.Mismatch = true;
 
             if (subDomain.Contains("msft"))
             {
@@ -75,11 +80,6 @@ namespace KuduVersionCheck.Controllers
             {
                 entry.Environment = subDomain.Substring(0, subDomain.Length - entry.Name.Length - 1);
             }
-
-            // Make sure it matches the test site name
-            // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
-            string expectedName = uri.Host.Split('.')[0].Substring(5);
-            if (entry.Name != expectedName) entry.Mismatch = true;
 
             // Don't show the msft prefix in the site name to keep things short
             if (entry.Name.StartsWith("msft"))
