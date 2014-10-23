@@ -179,15 +179,24 @@ namespace KuduVersionCheck.Controllers
 
         private int GetColorKey(StampEntry entry)
         {
-            int colorKey = 0;
+            // Hash combining algorithm based on http://stackoverflow.com/questions/1646807/quick-and-simple-hash-code-combinations
+            int colorKey = 17;
 
             foreach (var pair in entry.Data.OrderBy(p => p.Key))
             {
-                // excluding waws version as it may vary between workers
-                if (!pair.Key.Equals("waws", StringComparison.OrdinalIgnoreCase))
+                string value = pair.Value;
+
+                // excluding waws last number of version version as it may vary between workers
+                if (pair.Key.Equals("waws", StringComparison.OrdinalIgnoreCase))
                 {
-                    colorKey ^= pair.Value.GetHashCode();
+                    int lastPeriodIndex = value.LastIndexOf(".");
+                    if (lastPeriodIndex > 0)
+                    {
+                        value = value.Substring(0, value.Length - lastPeriodIndex);
+                    }
                 }
+
+                colorKey = colorKey * 31 + value.GetHashCode();
             }
 
             return colorKey;
