@@ -39,7 +39,7 @@
             @foreach (var entry in group.OrderBy(e => e.Name))
             {
                 <tr>
-                    <td style="@entry.Style"><a style="@entry.Style" href="@entry.TestSiteUrl" target="_blank">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
+                    <td style="@entry.Style"><a style="@entry.Style" href="@entry.TestSiteUrl">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
                     @if (Model.ShowConsole) { <td style="@entry.Style"><a style="@entry.Style" href="@entry.ConsoleUrl" target="_blank">run</a></td> }
                     @foreach (var column in Model.Columns)
                     {
