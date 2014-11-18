@@ -22,7 +22,7 @@ namespace KuduVersionCheck.Controllers
             viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
             IEnumerable<StampEntry> stampEntries = ApplyStyle(await GetStampEntriesAsync());
-            viewModel.Groups = stampEntries.GroupBy(e => e.Environment);
+            viewModel.Groups = stampEntries.OrderByDescending(e => e.Environment).GroupBy(e => e.Environment);
 
             // Find the first non-error entry to get the columns
             var entry = stampEntries.FirstOrDefault(e => !e.Data.ContainsKey("Error"));
@@ -64,21 +64,32 @@ namespace KuduVersionCheck.Controllers
             string subDomain = host.HostName.Split('.')[0];
 
             // e.g. waws-prod-msfthk1-901 -> msfthk1-901
-            string[] segments = subDomain.Split('-');
             entry.Name = uri.Host.Split('.')[0].Substring(5);
 
             // Make sure the dns matches the test site name
             // e.g. kudu-blu-001.scm.azurewebsites.net --> blu-001
-            string dnsSiteName = segments[segments.Length - 2] + '-' + segments[segments.Length - 1];
-            if (entry.Name != dnsSiteName) entry.Mismatch = true;
+            string[] segments = subDomain.Split('-');
+            if (segments.Length >= 2)
+            {
+                string dnsSiteName = segments[segments.Length - 2] + '-' + segments[segments.Length - 1];
+                if (entry.Name != dnsSiteName) entry.Mismatch = true;
+            }
 
             if (subDomain.Contains("msft"))
             {
                 entry.Environment = "msft";
             }
-            else
+            else if (segments.Length >= 2)
             {
                 entry.Environment = subDomain.Substring(0, subDomain.Length - entry.Name.Length - 1);
+            }
+            else
+            {
+                entry.Environment = subDomain;
+                if (Char.IsDigit(subDomain[subDomain.Length - 1]))
+                {
+                    entry.Environment = entry.Environment.Substring(0, subDomain.Length - 1);
+                }
             }
 
             // Don't show the msft prefix in the site name to keep things short
