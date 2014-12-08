@@ -32,9 +32,70 @@ namespace KuduVersionCheck.Controllers
             return View(viewModel);
         }
 
+        public ActionResult Csv(string[] endpoint, string toolset)
+        {
+            if (endpoint == null || toolset == null)
+            {
+                throw new ArgumentException("endpoint and toolset need to be passed on query string");
+            }
+
+            int count = 0;
+            Response.Output.WriteLine("BatchId,Endpoint,ScaleUnit,Cluster,Template,SettingsFile,Toolset,Tenants,StartState");
+
+            var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net")).OrderBy(s => s);
+
+            foreach (var url in urls)
+            {
+                var uri = new Uri(url);
+
+                string stampName = uri.Host.Split('.')[0];
+                stampName = stampName.Substring(5);
+
+                var csvEntry = new List<string>();
+
+                // BatchId
+                csvEntry.Add("0");
+
+                // Endpoint
+                csvEntry.Add(endpoint[count++ % endpoint.Length]);
+
+                // ScaleUnit
+                csvEntry.Add("waws-prod-" + stampName);
+
+                // Cluster
+                csvEntry.Add("");
+
+                // Template
+                csvEntry.Add("Antares_RapidUpdate.xml");
+
+                // SettingsFile
+                csvEntry.Add("Settings_Antares.xml");
+
+                // Toolset
+                csvEntry.Add(String.Format(@"ext_ANT={0};usecmtcore;usedcsm;usewadi", toolset));
+
+                // Tenants
+                csvEntry.Add("");
+
+                // StartState
+                csvEntry.Add("Pause");
+
+                Response.Output.WriteLine(String.Join(",", csvEntry));
+            }
+
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "RapidUpdate.csv",
+                Inline = false,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString()); 
+
+            return null;
+        }
+
         private async Task<IEnumerable<StampEntry>> GetStampEntriesAsync()
         {
-            return await Task.WhenAll(GetDeployUrls().Select(url => GetStampEntryAsyncWithFallbackAsync(url)));
+            return await Task.WhenAll(GetDeployUrls().Select(GetStampEntryAsyncWithFallbackAsync));
         }
 
         private async Task<StampEntry> GetStampEntryAsyncWithFallbackAsync(string url)

@@ -14,6 +14,12 @@ namespace KuduVersionCheck
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "csv",
+                url: "csv",
+                defaults: new { controller = "Home", action = "csv" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
