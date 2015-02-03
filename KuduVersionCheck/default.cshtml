@@ -78,7 +78,10 @@
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
     
-    props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
+    props["UNENCODED_URL"] = Request.ServerVariables["UNENCODED_URL"];
+    
+    //props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
+    
     //props["PHP55"] = (appHostContent.Contains(@"PHP55_via_FastCGI") && appHostContent.Contains(@"D:\Program Files (x86)\PHP\v5.5\php-cgi.exe")).ToString();
 
     //var info = new FileInfo(@"D:\Program Files\iisnode\interceptor.js");
