@@ -228,16 +228,17 @@ namespace KuduVersionCheck.Controllers
                 return e;
             });
 
-            // Pick cq1 as latest
-            var cq1 = result.FirstOrDefault(e => e.Name.Equals("cq1-001", StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
-            if (cq1 == null)
+            // Pick intbn1 as latest
+
+            var baseStamp = result.FirstOrDefault(e => e.Name.Equals("intbn1-501", StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
+            if (baseStamp == null)
             {
                 return stampEntries;
             }
 
-            int green = GetColorKey(cq1);
+            int green = GetColorKey(baseStamp);
 
-            // Any matching cq1, color green.
+            // Any matching base, color green.
             return result.Select(e => 
             {
                 if (String.IsNullOrEmpty(e.Style) && GetColorKey(e) == green)
@@ -257,6 +258,8 @@ namespace KuduVersionCheck.Controllers
             foreach (var pair in entry.Data.OrderBy(p => p.Key))
             {
                 string value = pair.Value;
+
+                if (pair.Key.EndsWith("$")) continue;
 
                 // excluding waws last number of version version as it may vary between workers
                 if (pair.Key.Equals("waws", StringComparison.OrdinalIgnoreCase))
