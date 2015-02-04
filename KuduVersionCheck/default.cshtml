@@ -56,6 +56,18 @@
         string highestVersionFolder = Directory.GetDirectories(folder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
         return Path.GetFileName(highestVersionFolder);
     }
+
+    private long GetTotalFreeSpace(string driveName)
+    {
+        foreach (DriveInfo drive in DriveInfo.GetDrives())
+        {
+            if (drive.IsReady && drive.Name == driveName)
+            {
+                return drive.TotalFreeSpace;
+            }
+        }
+        return -1;
+    }
 }
 
 @{
@@ -78,6 +90,8 @@
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
     
+    props["FreeDSpace"] = GetTotalFreeSpace(@"D:\").ToString();
+
     props["UNENCODED_URL"] = Request.ServerVariables["UNENCODED_URL"];
     
     //props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
