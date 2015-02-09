@@ -93,6 +93,37 @@ namespace KuduVersionCheck.Controllers
             return null;
         }
 
+        public ActionResult Acis()
+        {
+            string sourceStamp = "msftintbn1-501";
+
+            var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net") && !s.Contains(sourceStamp)).OrderBy(s => s);
+
+            foreach (var url in urls)
+            {
+                var uri = new Uri(url);
+
+                string stampName = uri.Host.Split('.')[0];
+                stampName = stampName.Substring(5);
+
+                var csvEntry = new List<string>();
+
+                csvEntry.Add("waws-prod-" + sourceStamp);
+                csvEntry.Add("waws-prod-" + stampName);
+
+                Response.Output.WriteLine(String.Join(",", csvEntry));
+            }
+
+            var cd = new System.Net.Mime.ContentDisposition
+            {
+                FileName = "RapidUpdateAcis.csv",
+                Inline = false,
+            };
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return null;
+        }
+
         private async Task<IEnumerable<StampEntry>> GetStampEntriesAsync()
         {
             return await Task.WhenAll(GetDeployUrls().Select(GetStampEntryAsyncWithFallbackAsync));

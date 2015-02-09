@@ -20,6 +20,12 @@ namespace KuduVersionCheck
             );
 
             routes.MapRoute(
+                name: "acis",
+                url: "acis",
+                defaults: new { controller = "Home", action = "acis" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
