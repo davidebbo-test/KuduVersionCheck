@@ -14,6 +14,8 @@ namespace KuduVersionCheck.Controllers
 {
     public class HomeController : AsyncController
     {
+        const string sourceStamp = "msftintbn1-501";
+
         public async Task<ActionResult> Index(string mode)
         {
             var viewModel = new StampEntriesViewModel();
@@ -42,7 +44,8 @@ namespace KuduVersionCheck.Controllers
             int count = 0;
             Response.Output.WriteLine("BatchId,Endpoint,ScaleUnit,Cluster,Template,SettingsFile,Toolset,Tenants,StartState");
 
-            var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net")).OrderBy(s => s);
+            //var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net")).OrderBy(s => s);
+            var urls = GetDeployUrls().Where(s => s.Contains(sourceStamp)).OrderBy(s => s);
 
             foreach (var url in urls)
             {
@@ -95,8 +98,6 @@ namespace KuduVersionCheck.Controllers
 
         public ActionResult Acis()
         {
-            string sourceStamp = "msftintbn1-501";
-
             var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net") && !s.Contains(sourceStamp)).OrderBy(s => s);
 
             foreach (var url in urls)
