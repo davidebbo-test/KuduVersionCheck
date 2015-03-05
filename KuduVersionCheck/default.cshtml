@@ -81,6 +81,26 @@
     
         return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
     }
+
+
+    private static double GetWritePerf()
+    {
+        string testFilePath = Environment.ExpandEnvironmentVariables(@"%HOME%\site\FileSystemPerf.txt");
+        
+        var start = DateTime.Now;
+        double total = 0;
+        int maxIteration = 10;
+        for (int i = 0; i < maxIteration; i++)
+        {
+            var iterationStart = DateTime.Now;
+            File.WriteAllText(testFilePath, "Hello");
+
+            double ms = (DateTime.Now - iterationStart).TotalMilliseconds;
+            total += ms;
+        }
+
+        return (DateTime.Now - start).TotalMilliseconds / maxIteration;
+    }
 }
 
 @{
@@ -105,7 +125,9 @@
     
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
-    props["UNENCODED_URL$"] = Request.ServerVariables["UNENCODED_URL"];
+    props["WritePerf"] = GetWritePerf().ToString();
+
+    //props["UNENCODED_URL$"] = Request.ServerVariables["UNENCODED_URL"];
     
     //props["ScmSep"] = appHostContent.Contains(@"add name=""~1").ToString();
     
