@@ -106,7 +106,7 @@
 @{
     var mwhAssembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
-    props["waws$"] = fileVersionInfo.FileVersion;
+    props["waws"] = fileVersionInfo.FileVersion;
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
