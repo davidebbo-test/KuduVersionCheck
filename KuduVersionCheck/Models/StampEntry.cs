@@ -9,7 +9,7 @@ namespace KuduVersionCheck.Models
         public string Environment { get; set; }
         public bool Mismatch { get; set; }
         public string TestSiteUrl { get; set; }
-        public IDictionary<string, string> Data { get; set; }
+        public IDictionary<string, StampCell> Data { get; set; }
         public string ConsoleUrl { get; set; }
         public TimeSpan Duration { get; set; }
         public string Style { get; set; }

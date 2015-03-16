@@ -23,7 +23,9 @@ namespace KuduVersionCheck.Controllers
             // Get the secret key that shows the Kudu urls
             viewModel.ShowConsole = (mode == ConfigurationManager.AppSettings["ScmMode"]);
 
-            IEnumerable<StampEntry> stampEntries = ApplyStyle(await GetStampEntriesAsync());
+            IEnumerable<StampEntry> stampEntries = await GetStampEntriesAsync();
+            ApplyStyle(stampEntries);
+
             viewModel.Groups = stampEntries.OrderByDescending(e => e.Environment).GroupBy(e => e.Environment);
 
             // Find the first non-error entry to get the columns
@@ -138,10 +140,10 @@ namespace KuduVersionCheck.Controllers
             }
             catch (Exception e)
             {
-                return new StampEntry()
+                return new StampEntry
                 {
                     Name = new Uri(url).Host,
-                    Data = new Dictionary<string, string>() { { "kudu", e.Message } }
+                    Data = new Dictionary<string, StampCell>() { { "kudu", new StampCell(e.Message) } }
                 };
             }
         }
@@ -204,7 +206,7 @@ namespace KuduVersionCheck.Controllers
             return entry;
         }
 
-        private async Task<IDictionary<string,string>> RequestSiteData(string testSite)
+        private async Task<IDictionary<string, StampCell>> RequestSiteData(string testSite)
         {
             using (var client = new HttpClient())
             {
@@ -216,7 +218,7 @@ namespace KuduVersionCheck.Controllers
 
                     IDictionary<string, JToken> token = JObject.Parse(dataString);
 
-                    return token.ToDictionary(entry => entry.Key, entry => entry.Value.ToString());
+                    return token.ToDictionary(entry => entry.Key, entry => new StampCell(entry.Value.ToString()));
                 }
                 catch (Exception e)
                 {
@@ -225,7 +227,7 @@ namespace KuduVersionCheck.Controllers
                         e = e.InnerException;
                     }
 
-                    return new Dictionary<string, string>() { { "Error", e.Message } };
+                    return new Dictionary<string, StampCell>() { { "Error", new StampCell(e.Message) } };
                 }
             }
         }
@@ -249,64 +251,76 @@ namespace KuduVersionCheck.Controllers
 
         private IEnumerable<StampEntry> ApplyStyle(IEnumerable<StampEntry> stampEntries)
         {
-            // For error, color red.
-            var result = stampEntries.Select(e =>
-            {
-                if (e.Data.ContainsKey("Error"))
-                {
-                    e.Style = "background-color: red; color: white";
-                }
-
-                return e;
-            });
-
-            // Pick intbn1 as latest
-
-            var baseStamp = result.FirstOrDefault(e => e.Name.Equals("intbn1-501", StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
+            // Find the 'reference' stamp
+            var baseStamp = stampEntries.FirstOrDefault(e => e.Name.Equals("intbn1-501", StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
             if (baseStamp == null)
             {
                 return stampEntries;
             }
 
-            int green = GetColorKey(baseStamp);
-
-            // Any matching base, color green.
-            return result.Select(e => 
+            // Go through all the stamps
+            foreach (var stamp in stampEntries)
             {
-                if (String.IsNullOrEmpty(e.Style) && GetColorKey(e) == green)
+                if (stamp.Data.ContainsKey("Error"))
                 {
-                    e.Style = "background-color: green; color: white"; 
+                    // For error, color red.
+                    stamp.Style = "background-color: red; color: white";
                 }
-
-                return e;
-            });
-        }
-
-        private int GetColorKey(StampEntry entry)
-        {
-            // Hash combining algorithm based on http://stackoverflow.com/questions/1646807/quick-and-simple-hash-code-combinations
-            int colorKey = 17;
-
-            foreach (var pair in entry.Data.OrderBy(p => p.Key))
-            {
-                string value = pair.Value;
-
-                if (pair.Key.EndsWith("$")) continue;
-
-                // excluding waws last number of version version as it may vary between workers
-                if (pair.Key.Equals("waws", StringComparison.OrdinalIgnoreCase))
+                else
                 {
-                    int lastPeriodIndex = value.LastIndexOf(".");
-                    if (lastPeriodIndex > 0)
+                    // Go through all the data columns
+                    bool mismatch = false;
+                    foreach (var dataEntry in stamp.Data)
                     {
-                        value = value.Substring(0, value.Length - lastPeriodIndex);
+                        // don't cause mismatch for any column that ends with $
+                        if (dataEntry.Key.EndsWith("$")) continue;
+
+                        StampCell referenceCell, currentCell = dataEntry.Value;
+                        if (baseStamp.Data.TryGetValue(dataEntry.Key, out referenceCell))
+                        {
+                            // If the cell matches the reference, make it green
+                            if (FilterValue(dataEntry.Key, currentCell.Value) == FilterValue(dataEntry.Key, referenceCell.Value))
+                            {
+                                currentCell.Style = "background-color: green; color: white";
+                            }
+                            else
+                            {
+                                mismatch = true;
+                            }
+                        }
+                    }
+
+                    // If there are no mismatches, default the row to green
+                    if (!mismatch)
+                    {
+                        stamp.Style = "background-color: green; color: white";
+                    }
+
+                    // Now set all the $ columns to the default style of the row
+                    foreach (var dataEntry in stamp.Data.Where(e => e.Key.EndsWith("$")))
+                    {
+                        dataEntry.Value.Style = stamp.Style;
                     }
                 }
-
-                colorKey = colorKey * 31 + value.GetHashCode();
             }
 
-            return colorKey;
+
+            return stampEntries;
+        }
+
+        private string FilterValue(string key, string value)
+        {
+            // excluding waws last number of version version as it may vary between workers
+            if (key == "waws")
+            {
+                int lastPeriodIndex = value.LastIndexOf(".");
+                if (lastPeriodIndex > 0)
+                {
+                    value = value.Substring(0, value.Length - lastPeriodIndex);
+                }
+            }
+
+            return value;
         }
     }
 }

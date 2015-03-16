@@ -43,9 +43,13 @@
                     @if (Model.ShowConsole) { <td style="@entry.Style"><a style="@entry.Style" href="@entry.ConsoleUrl" target="_blank">run</a></td> }
                     @foreach (var column in Model.Columns)
                     {
-                        string val = "";
-                        entry.Data.TryGetValue(column, out val);
-                        <td style="@entry.Style">@val</td>
+                        KuduVersionCheck.Models.StampCell cell;
+                        if (entry.Data.TryGetValue(column, out cell)) {
+                            <td style="@cell.Style">@cell</td>
+                        }
+                        else {
+                            <td style="@entry.Style"></td>
+                        }
                     }
                     <td style="@entry.Style">@((int)entry.Duration.TotalMilliseconds)</td>
                 </tr>
