@@ -126,7 +126,14 @@
     
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
-    props["WritePerf$"] = GetWritePerf().ToString();
+    try
+    {
+        props["WritePerf$"] = GetWritePerf().ToString();
+    }
+    catch
+    {
+        props["WritePerf$"] = "error";
+    }
 
     //props["UNENCODED_URL$"] = Request.ServerVariables["UNENCODED_URL"];
     
