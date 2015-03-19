@@ -100,6 +100,19 @@ namespace KuduVersionCheck.Controllers
 
         public ActionResult Acis()
         {
+            return AcisInternal((sourceStamp, targetStamp) =>
+                String.Format("{0},{1}", sourceStamp, targetStamp));
+        }
+
+        public ActionResult AcisCommandLine()
+        {
+            return AcisInternal((sourceStamp, targetStamp) =>
+                String.Format("SyncRapidUpdateContainerForStamps {0} {1}", sourceStamp, targetStamp));
+        }
+
+        [NonAction]
+        private ActionResult AcisInternal(Func<string,string,string> generateLine)
+        {
             var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net") && !s.Contains(sourceStamp)).OrderBy(s => s);
 
             foreach (var url in urls)
@@ -109,17 +122,12 @@ namespace KuduVersionCheck.Controllers
                 string stampName = uri.Host.Split('.')[0];
                 stampName = stampName.Substring(5);
 
-                var csvEntry = new List<string>();
-
-                csvEntry.Add("waws-prod-" + sourceStamp);
-                csvEntry.Add("waws-prod-" + stampName);
-
-                Response.Output.WriteLine(String.Join(",", csvEntry));
+                Response.Output.WriteLine(generateLine("waws-prod-" + sourceStamp, "waws-prod-" + stampName));
             }
 
             var cd = new System.Net.Mime.ContentDisposition
             {
-                FileName = "RapidUpdateAcis.csv",
+                FileName = "RapidUpdateAcis.txt",
                 Inline = false,
             };
             Response.AppendHeader("Content-Disposition", cd.ToString());
