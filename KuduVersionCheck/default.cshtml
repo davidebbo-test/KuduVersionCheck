@@ -3,6 +3,7 @@
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
     string nodeFolder = @"D:\Program Files (x86)\nodejs";
     string npmFolder = @"D:\Program Files (x86)\npm";
+    string goFolder = @"D:\Program Files\Go";
 
     class FancyVersion : IComparable<FancyVersion>
     {
@@ -53,8 +54,15 @@
 
     string GetLatestVersionFromFolder(string folder)
     {
-        string highestVersionFolder = Directory.GetDirectories(folder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
-        return Path.GetFileName(highestVersionFolder);
+        try
+        {
+            string highestVersionFolder = Directory.GetDirectories(folder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
+            return Path.GetFileName(highestVersionFolder);
+        }
+        catch
+        {
+            return "error";
+        }
     }
 
     private long GetTotalFreeSpace(string driveName)
@@ -120,6 +128,7 @@
 
     props["Node"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
+    props["go"] = GetLatestVersionFromFolder(goFolder);
 
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
