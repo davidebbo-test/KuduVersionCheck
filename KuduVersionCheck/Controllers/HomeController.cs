@@ -14,7 +14,7 @@ namespace KuduVersionCheck.Controllers
 {
     public class HomeController : AsyncController
     {
-        const string sourceStamp = "bay-015";
+        const string sourceStamp = "inthk1-501";
 
         public async Task<ActionResult> Index(string mode)
         {
