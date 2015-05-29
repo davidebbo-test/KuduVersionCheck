@@ -14,7 +14,8 @@ namespace KuduVersionCheck.Controllers
 {
     public class HomeController : AsyncController
     {
-        const string sourceStamp = "inthk1-501";
+        const string sourceStamp = "msftinthk1-501";
+        const string sourceStampShort = "inthk1-501";
 
         public async Task<ActionResult> Index(string mode)
         {
@@ -260,7 +261,7 @@ namespace KuduVersionCheck.Controllers
         private IEnumerable<StampEntry> ApplyStyle(IEnumerable<StampEntry> stampEntries)
         {
             // Find the 'reference' stamp
-            var baseStamp = stampEntries.FirstOrDefault(e => e.Name.EndsWith(sourceStamp, StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
+            var baseStamp = stampEntries.FirstOrDefault(e => e.Name.EndsWith(sourceStampShort, StringComparison.OrdinalIgnoreCase) && !e.Data.ContainsKey("Error"));
             if (baseStamp == null)
             {
                 return stampEntries;
