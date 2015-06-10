@@ -114,7 +114,7 @@ namespace KuduVersionCheck.Controllers
         [NonAction]
         private ActionResult AcisInternal(Func<string,string,string> generateLine)
         {
-            var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net") && !s.Contains(sourceStamp)).OrderBy(s => s);
+            var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net") && !s.Contains(".p.") && !s.Contains(sourceStamp)).OrderBy(s => s);
 
             foreach (var url in urls)
             {
