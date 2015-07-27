@@ -126,6 +126,9 @@
     //AddSiteExtension("SecurityInsightAdmin");
     AddSiteExtension("ApiAppsGateway");
 
+    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
+    props["iisnode"] = fileVersionInfo.FileVersion;
+
     props["Node"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
     props["go"] = GetLatestVersionFromFolder(goFolder);
