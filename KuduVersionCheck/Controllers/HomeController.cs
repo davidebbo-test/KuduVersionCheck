@@ -123,7 +123,15 @@ namespace KuduVersionCheck.Controllers
                 string stampName = uri.Host.Split('.')[0];
                 stampName = stampName.Substring(5);
 
-                Response.Output.WriteLine(generateLine("waws-prod-" + sourceStamp, "waws-prod-" + stampName));
+                string sourceStampToUse = sourceStamp;
+
+                // This is to work around a wierd storage issue
+                if (stampName == "hk1-007")
+                {
+                    sourceStampToUse = "am2-001";
+                }
+
+                Response.Output.WriteLine(generateLine("waws-prod-" + sourceStampToUse, "waws-prod-" + stampName));
             }
 
             var cd = new System.Net.Mime.ContentDisposition
