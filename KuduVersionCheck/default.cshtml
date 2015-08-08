@@ -116,6 +116,9 @@
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(mwhAssembly.Location);
     props["waws"] = fileVersionInfo.FileVersion;
 
+    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
+    props["System.Web"] = fileVersionInfo.FileVersion;
+
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
     AddSiteExtension("MobileServicesDotNet");
