@@ -45,7 +45,7 @@ namespace KuduVersionCheck.Controllers
             }
 
             int count = 0;
-            Response.Output.WriteLine("BatchId,Endpoint,ScaleUnit,Cluster,Template,SettingsFile,Toolset,Tenants,StartState");
+            Response.Output.WriteLine("BatchId,Endpoint,ScaleUnit,Cluster,Template,SettingsFile,Toolset,Tenants,InitialState");
 
             //var urls = GetDeployUrls().Where(s => s.Contains("azurewebsites.net")).OrderBy(s => s);
             var urls = GetDeployUrls().Where(s => s.Contains(sourceStamp)).OrderBy(s => s);
@@ -83,7 +83,7 @@ namespace KuduVersionCheck.Controllers
                 // Tenants
                 csvEntry.Add("");
 
-                // StartState
+                // InitialState
                 csvEntry.Add("Pause");
 
                 Response.Output.WriteLine(String.Join(",", csvEntry));
