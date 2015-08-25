@@ -118,8 +118,8 @@
 
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
     props["S.W.32"] = fileVersionInfo.FileVersion.Split(' ')[0];
-    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_64\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
-    props["S.W.64"] = fileVersionInfo.FileVersion.Split(' ')[0];;
+    //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_64\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
+    //props["S.W.64"] = fileVersionInfo.FileVersion.Split(' ')[0];;
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
@@ -142,6 +142,8 @@
 
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
+    
+    props["Fx452Refs"] = File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Accessibility.dll").ToString();
     
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
