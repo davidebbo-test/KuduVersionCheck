@@ -120,6 +120,25 @@
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
     props["diag"] = fileVersionInfo.FileVersion;
 
+    try
+    {
+        assembly = System.Reflection.Assembly.Load("Microsoft.Azure.Websites.StorageSdk, Version=4.1.0.0, Culture=neutral, PublicKeyToken=691e959c3809d0a1");
+        props["stor41"] = "true";
+    }
+    catch
+    {
+        props["stor41"] = "false";
+    }
+    try
+    {
+        assembly = System.Reflection.Assembly.Load("Microsoft.Azure.Websites.StorageSdk, Version=4.3.0.0, Culture=neutral, PublicKeyToken=691e959c3809d0a1");
+        props["stor43"] = "true";
+    }
+    catch
+    {
+        props["stor43"] = "false";
+    }
+
     //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
     //props["S.W.32"] = fileVersionInfo.FileVersion.Split(' ')[0];
     //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_64\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
