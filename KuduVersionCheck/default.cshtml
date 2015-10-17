@@ -139,6 +139,16 @@
         props["stor43"] = "false";
     }
 
+    try
+    {
+        assembly = System.Reflection.Assembly.Load("Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+        props["edm56"] = "true";
+    }
+    catch
+    {
+        props["edm56"] = "false";
+    }
+
     //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
     //props["S.W.32"] = fileVersionInfo.FileVersion.Split(' ')[0];
     //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_64\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
