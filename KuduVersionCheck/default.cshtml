@@ -43,7 +43,7 @@
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
-            string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
+            string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).FirstOrDefault();
             props[name] = Path.GetFileName(versionFolder);
         }
         else
@@ -165,6 +165,7 @@
     AddSiteExtension("ApiAppsGateway");
     AddSiteExtension("Zray54");
     AddSiteExtension("appidentify");
+    AddSiteExtension("DropBoxConnector");
 
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
     props["iisnode"] = fileVersionInfo.FileVersion;
