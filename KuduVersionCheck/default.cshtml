@@ -44,7 +44,7 @@
         if (Directory.Exists(extensionFolder))
         {
             string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).FirstOrDefault();
-            props[name] = Path.GetFileName(versionFolder);
+            props[name] = versionFolder == null ? "none" : Path.GetFileName(versionFolder);
         }
         else
         {
