@@ -116,10 +116,6 @@
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
     props["waws"] = fileVersionInfo.FileVersion;
 
-    assembly = System.Reflection.Assembly.Load("Microsoft.WindowsAzure.WebSites.Diagnostics, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-    props["diag"] = fileVersionInfo.FileVersion;
-
     try
     {
         assembly = System.Reflection.Assembly.Load("Microsoft.Azure.Websites.StorageSdk, Version=4.1.0.0, Culture=neutral, PublicKeyToken=691e959c3809d0a1");
