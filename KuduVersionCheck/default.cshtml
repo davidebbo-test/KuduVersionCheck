@@ -116,39 +116,10 @@
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
     props["waws"] = fileVersionInfo.FileVersion;
 
-    try
-    {
-        assembly = System.Reflection.Assembly.Load("Microsoft.Azure.Websites.StorageSdk, Version=4.1.0.0, Culture=neutral, PublicKeyToken=691e959c3809d0a1");
-        props["stor41"] = "true";
-    }
-    catch
-    {
-        props["stor41"] = "false";
-    }
-    try
-    {
-        assembly = System.Reflection.Assembly.Load("Microsoft.Azure.Websites.StorageSdk, Version=4.3.0.0, Culture=neutral, PublicKeyToken=3a5db2940cfb2d9c");
-        props["stor43"] = "true";
-    }
-    catch
-    {
-        props["stor43"] = "false";
-    }
-
-    try
-    {
-        assembly = System.Reflection.Assembly.Load("Microsoft.Data.Edm, Version=5.6.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
-        props["edm56"] = "true";
-    }
-    catch
-    {
-        props["edm56"] = "false";
-    }
-
-    //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_32\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
-    //props["S.W.32"] = fileVersionInfo.FileVersion.Split(' ')[0];
-    //fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\Microsoft.Net\assembly\GAC_64\System.Web\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.web.dll");
-    //props["S.W.64"] = fileVersionInfo.FileVersion.Split(' ')[0];;
+    string version = (string)Microsoft.Win32.Registry.GetValue(
+        @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", 
+        "BuildLab", null);
+    props["osversion"] = version.Split('.')[2];
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
@@ -187,10 +158,10 @@
         props["WritePerf$"] = "error";
     }
 
-    props["4.5.1 SDK"] = (File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.dll") &&
-                         File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.xml")).ToString();
+    //props["4.5.1 SDK"] = (File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.dll") &&
+    //                     File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.xml")).ToString();
 
-    props["4.5.2 SDK"] = File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\facades\System.Collections.dll").ToString();
+    //props["4.5.2 SDK"] = File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\facades\System.Collections.dll").ToString();
 
     //props["UNENCODED_URL$"] = Request.ServerVariables["UNENCODED_URL"];
     
