@@ -52,11 +52,18 @@
         }
     }
 
-    string GetLatestVersionFromFolder(string folder)
+    string GetLatestVersionFromFolder(string folder, string ignoreVerAndAbove = "9")
     {
+        var maxVer = new FancyVersion(ignoreVerAndAbove);
         try
         {
-            string highestVersionFolder = Directory.GetDirectories(folder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).First();
+            var folders = from childFolder in Directory.GetDirectories(folder)
+                          let fancyVer = new FancyVersion(Path.GetFileName(childFolder))
+                          where fancyVer.CompareTo(maxVer) < 0
+                          orderby fancyVer descending
+                          select childFolder;
+                             
+            string highestVersionFolder = folders.First();
             return Path.GetFileName(highestVersionFolder);
         }
         catch
@@ -137,7 +144,8 @@
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
     props["iisnode"] = fileVersionInfo.FileVersion;
 
-    props["Node"] = GetLatestVersionFromFolder(nodeFolder);
+    props["Node4"] = GetLatestVersionFromFolder(nodeFolder, "5");
+    props["Node5"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
     props["go"] = GetLatestVersionFromFolder(goFolder);
 
