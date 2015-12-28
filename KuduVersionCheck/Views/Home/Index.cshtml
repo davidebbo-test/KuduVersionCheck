@@ -1,19 +1,5 @@
 ﻿@model KuduVersionCheck.Models.StampEntriesViewModel
 
-@functions {
-    string GetColumnDisplayName(string columnName)
-    {
-        switch (columnName) {
-            case "MobileServicesDotNet":
-                return "Mobile.Net";
-            case "MobileServicesNode":
-                return "MobileNode";
-            default:
-                return columnName;
-        }
-    }
-}
-
 <!DOCTYPE html>
 
 <html>
@@ -32,7 +18,7 @@
                 @if (Model.ShowConsole) { <th>Kudu</th> }
                 @foreach (var column in Model.Columns)
                 {
-                    <th>@GetColumnDisplayName(column)</th>
+                    <th>@column</th>
                 }
                 <th>Time</th>
             </tr>
