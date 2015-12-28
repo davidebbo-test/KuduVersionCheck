@@ -1,5 +1,5 @@
 ﻿@functions {
-    Dictionary<string, string> props = new Dictionary<string, string>();
+    Dictionary<string, PropertyEntry> props = new Dictionary<string, PropertyEntry>();
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
     string nodeFolder = @"D:\Program Files (x86)\nodejs";
     string npmFolder = @"D:\Program Files (x86)\npm";
@@ -36,19 +36,32 @@
         }
     }
 
-    void AddSiteExtension(string folderName, string name = null)
+    class PropertyEntry
     {
-        name = name ?? folderName;
+        public string DisplayName { get; set; }
+        public string Value { get; set; }
+    }
+
+    void AddProperty(string name, string value, string displayName = null)
+    {
+        displayName = displayName ?? name;
+        props[name] = new PropertyEntry { DisplayName = displayName, Value = value };
+    }
+    
+    void AddSiteExtension(string folderName, string displayName = null)
+    {
+        string name = folderName;
         
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
             string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).FirstOrDefault();
-            props[name] = versionFolder == null ? "none" : Path.GetFileName(versionFolder);
+            string version = versionFolder == null ? "none" : Path.GetFileName(versionFolder);
+            AddProperty(name, version);
         }
         else
         {
-            props[name] = "none";
+            AddProperty(name, "none");
         }
     }
 
@@ -121,12 +134,12 @@
 @{
     var assembly = System.Reflection.Assembly.Load("Microsoft.Web.Hosting, Version=7.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
-    props["waws"] = fileVersionInfo.FileVersion;
+    AddProperty("waws", fileVersionInfo.FileVersion);
 
     string version = (string)Microsoft.Win32.Registry.GetValue(
         @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", 
         "BuildLab", null);
-    props["osversion"] = version.Split('.')[2];
+    AddProperty("osversion", version.Split('.')[2]);
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
@@ -142,27 +155,27 @@
     AddSiteExtension("appidentify");
 
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
-    props["iisnode"] = fileVersionInfo.FileVersion;
+    AddProperty("iisnode", fileVersionInfo.FileVersion);
 
-    props["Node4"] = GetLatestVersionFromFolder(nodeFolder, "5");
-    props["Node5"] = GetLatestVersionFromFolder(nodeFolder);
-    props["npm"] = GetLatestVersionFromFolder(npmFolder);
-    props["go"] = GetLatestVersionFromFolder(goFolder);
+    AddProperty("Node4", GetLatestVersionFromFolder(nodeFolder, "5"));
+    AddProperty("Node5", GetLatestVersionFromFolder(nodeFolder));
+    AddProperty("npm", GetLatestVersionFromFolder(npmFolder));
+    AddProperty("go", GetLatestVersionFromFolder(goFolder));
 
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
     
     //props["Fx452Refs"] = File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Accessibility.dll").ToString();
     
-    props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
+    AddProperty("FreeDSpace$", FormatBytes(GetTotalFreeSpace(@"D:\")));
 
     try
     {
-        props["WritePerf$"] = GetWritePerf().ToString();
+        AddProperty("WritePerf$", GetWritePerf().ToString());
     }
     catch
     {
-        props["WritePerf$"] = "error";
+        AddProperty("WritePerf$", "error");
     }
 
     //props["4.5.1 SDK"] = (File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.dll") &&
