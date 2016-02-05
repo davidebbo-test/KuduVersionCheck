@@ -330,10 +330,10 @@ namespace KuduVersionCheck.Controllers
             // excluding waws last number of version version as it may vary between workers
             if (key == "waws")
             {
-                int lastPeriodIndex = value.LastIndexOf(".");
-                if (lastPeriodIndex > 0)
+                var numbers = value.Split('.');
+                if (numbers.Length > 3)
                 {
-                    value = value.Substring(0, value.Length - lastPeriodIndex);
+                    value = numbers[0] + "." + numbers[1];
                 }
             }
 
