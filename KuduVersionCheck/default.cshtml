@@ -152,6 +152,8 @@
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
     props["go"] = GetLatestVersionFromFolder(goFolder);
 
+    props["dotnet"] = Environment.GetEnvironmentVariable("PATH").Contains("dotnet").ToString();
+
     string appHostPath = Environment.ExpandEnvironmentVariables(@"%tmp%\..\config\applicationhost.config");
     string appHostContent = File.ReadAllText(appHostPath);
     
