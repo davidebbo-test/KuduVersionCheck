@@ -151,6 +151,7 @@
     props["Node6"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
     props["go"] = GetLatestVersionFromFolder(goFolder);
+    props["jdbc"] = File.Exists(@"D:\Program Files (x86)\apache-tomcat-8.0.23\lib\sqljdbc.jar").ToString();
 
     //props["dotnet"] = Environment.GetEnvironmentVariable("PATH").Contains("dotnet").ToString();
 
