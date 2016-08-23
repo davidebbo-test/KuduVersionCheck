@@ -1,4 +1,6 @@
-﻿@functions {
+﻿@using System.Reflection;
+
+@functions {
     Dictionary<string, string> props = new Dictionary<string, string>();
     string siteExtFolder = @"D:\Program Files (x86)\SiteExtensions";
     string nodeFolder = @"D:\Program Files (x86)\nodejs";
@@ -137,8 +139,8 @@
     AddSiteExtension("MSDeploy");
     AddSiteExtension("DaaS");
     //AddSiteExtension("SecurityInsightAdmin", "SecInsight");
-    props["func2"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.3");
-    props["func3"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.4");
+    //props["func2"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.3");
+    //props["func3"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.4");
     AddSiteExtension("Functions");
     //AddSiteExtension("ApiAppsGateway", "Gateway");
     AddSiteExtension("Zray54");
@@ -163,6 +165,16 @@
     
     //props["Fx452Refs"] = File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Accessibility.dll").ToString();
     
+    Assembly a=null;
+    try
+    {
+        a = Assembly.Load("Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed");
+    }
+    catch
+    {
+    }
+    props["jsongate"] = (a != null).ToString();
+
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
     try
