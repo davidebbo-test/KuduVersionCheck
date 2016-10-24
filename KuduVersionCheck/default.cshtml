@@ -147,6 +147,8 @@
     AddSiteExtension("appidentify");
     AddSiteExtension("PerformanceTesting", "perf");
 
+    props["core"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App");
+
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
     props["iisnode"] = fileVersionInfo.FileVersion;
 
@@ -173,7 +175,7 @@
     catch
     {
     }
-    props["jsongate"] = (a != null).ToString();
+    //props["jsongate"] = (a != null).ToString();
 
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
