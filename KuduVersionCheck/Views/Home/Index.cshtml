@@ -22,7 +22,8 @@
                 }
                 <th>Time</th>
             </tr>
-            @foreach (var entry in group.OrderBy(e => e.Name))
+            @* Dirty hack to get euap at end of the list. *@
+            @foreach (var entry in group.OrderBy(e => e.Name.StartsWith("euap") ? "z" + e.Name.Substring(4) : e.Name))
             {
                 <tr>
                     <td style="@entry.Style"><a style="@entry.Style" href="@entry.TestSiteUrl">@entry.Name</a> @if (entry.Mismatch) { <b>*</b> }</td>
