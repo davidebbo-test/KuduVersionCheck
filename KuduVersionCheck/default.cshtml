@@ -143,7 +143,7 @@
     //props["func3"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.4");
     AddSiteExtension("Functions");
     //AddSiteExtension("ApiAppsGateway", "Gateway");
-    AddSiteExtension("Zray54");
+    //AddSiteExtension("Zray54");
     AddSiteExtension("appidentify");
     AddSiteExtension("PerformanceTesting", "perf");
 
@@ -156,10 +156,11 @@
     props["iisnode"] = fileVersionInfo.FileVersion;
 
     props["Node4"] = GetLatestVersionFromFolder(nodeFolder, "5");
+    props["Node6"] = GetLatestVersionFromFolder(nodeFolder, "7");
+    props["Node7"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm1"] = GetLatestVersionFromFolder(npmFolder, "2");
-    props["Node6"] = GetLatestVersionFromFolder(nodeFolder);
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
-    props["go"] = GetLatestVersionFromFolder(goFolder);
+    //props["go"] = GetLatestVersionFromFolder(goFolder);
     //props["jdbc"] = File.Exists(@"D:\Program Files (x86)\apache-tomcat-8.0.23\lib\sqljdbc.jar").ToString();
     //props["MA"] = File.Exists(@"D:\Program Files\Mds\34.2.3.0\agent\MonAgentLauncher.exe").ToString();
 
