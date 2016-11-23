@@ -137,6 +137,7 @@
     AddSiteExtension("MobileAppsManagement", "ZumoManage");
     AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
+    props["msd"] = File.Exists(@"D:\Program Files (x86)\SiteExtensions\MSDeploy\3.5.51024.2802\bin\Microsoft.Web.Deployment.dll").ToString();
     AddSiteExtension("DaaS");
     //AddSiteExtension("SecurityInsightAdmin", "SecInsight");
     //props["func2"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.3");
