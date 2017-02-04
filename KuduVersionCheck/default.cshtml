@@ -184,6 +184,8 @@
     }
     //props["jsongate"] = (a != null).ToString();
 
+    props["en-SE"] = System.Globalization.CultureInfo.GetCultureInfo("en-SE").DisplayName;
+
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
     try
