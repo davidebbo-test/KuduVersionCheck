@@ -184,7 +184,14 @@
     }
     //props["jsongate"] = (a != null).ToString();
 
-    props["en-SE"] = System.Globalization.CultureInfo.GetCultureInfo("en-SE").DisplayName;
+    try
+    {
+        props["en-SE"] = System.Globalization.CultureInfo.GetCultureInfo("en-SE").DisplayName;
+    }
+    catch
+    {
+        props["en-SE"] = "unsupported";
+    }
 
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
