@@ -132,9 +132,9 @@
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
-    AddSiteExtension("MobileServicesDotNet", "ZumoNet");
-    AddSiteExtension("MobileServicesNode", "ZumoNode");
-    AddSiteExtension("MobileAppsManagement", "ZumoManage");
+    AddSiteExtension("MobileServicesDotNet", "ZuNet");
+    AddSiteExtension("MobileServicesNode", "ZuNode");
+    AddSiteExtension("MobileAppsManagement", "ZuManage");
     AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
     //props["msd"] = File.Exists(@"D:\Program Files (x86)\SiteExtensions\MSDeploy\3.5.51024.2802\bin\Microsoft.Web.Deployment.dll").ToString();
@@ -190,7 +190,7 @@
     }
     catch
     {
-        props["en-SE"] = "unsupported";
+        props["en-SE"] = "No";
     }
 
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
