@@ -38,15 +38,14 @@
         }
     }
 
-    void AddSiteExtension(string folderName, string name = null)
+    void AddSiteExtension(string folderName, string name = null, string ignoreVerAndAbove = "99999.0")
     {
         name = name ?? folderName;
         
         string extensionFolder = Path.Combine(siteExtFolder, folderName);
         if (Directory.Exists(extensionFolder))
         {
-            string versionFolder = Directory.GetDirectories(extensionFolder).OrderByDescending(s => new FancyVersion(Path.GetFileName(s))).FirstOrDefault();
-            props[name] = versionFolder == null ? "none" : Path.GetFileName(versionFolder);
+            props[name] = GetLatestVersionFromFolder(extensionFolder, ignoreVerAndAbove);
         }
         else
         {
@@ -54,7 +53,7 @@
         }
     }
 
-    string GetLatestVersionFromFolder(string folder, string ignoreVerAndAbove = "9")
+    string GetLatestVersionFromFolder(string folder, string ignoreVerAndAbove = "99999.0")
     {
         var maxVer = new FancyVersion(ignoreVerAndAbove);
         try
@@ -142,7 +141,7 @@
     //AddSiteExtension("SecurityInsightAdmin", "SecInsight");
     //props["func2"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.3");
     //props["func3"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\SiteExtensions\Functions", "0.4");
-    AddSiteExtension("Functions");
+    AddSiteExtension("Functions", ignoreVerAndAbove: "1.0.99999");
     AddSiteExtension("routing");
     //AddSiteExtension("ApiAppsGateway", "Gateway");
     //AddSiteExtension("Zray54");
