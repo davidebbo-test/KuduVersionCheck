@@ -165,6 +165,8 @@
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\SysWOW64\inetsrv\aspnetcore.dll");
     props["ancm"] = fileVersionInfo.FileVersion;
     
+    props["mds"] = GetLatestVersionFromFolder(@"D:\Program Files\Mds");
+
     props["Node4"] = GetLatestVersionFromFolder(nodeFolder, "5");
     props["Node6"] = GetLatestVersionFromFolder(nodeFolder, "7");
     props["Node7"] = GetLatestVersionFromFolder(nodeFolder, "8");
