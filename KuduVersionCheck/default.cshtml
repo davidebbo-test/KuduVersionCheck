@@ -118,6 +118,32 @@
 
         return (DateTime.Now - start).TotalMilliseconds / maxIteration;
     }
+    
+    void AddCpuColumn()
+    {
+        string cpuFile = Path.Combine(Path.GetTempPath(), "cpu.txt");
+        
+        if (!File.Exists(cpuFile))
+        {
+            // Use Node to get the cpu, since standard C# code doesn't run in sandbox
+            string nodeFile = Path.Combine(Path.GetTempPath(), "cpu.js");
+            File.WriteAllText(nodeFile,"var os = require('os'); console.log(os.cpus()[0].model);");
+            var proc = new Process {
+                StartInfo = new ProcessStartInfo {
+                    FileName = @"D:\Program Files (x86)\nodejs\8.4.0\node.exe",
+                    Arguments = nodeFile,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = HttpRuntime.AppDomainAppPath
+                }
+            };
+            proc.Start();
+            File.WriteAllText(cpuFile, proc.StandardOutput.ReadLine());
+        }
+
+        props["cpu$"] = File.ReadAllText(cpuFile);
+    }
 }
 
 @{
@@ -130,23 +156,7 @@
         "BuildLab", null);
     props["osversion"] = version.Split('.')[2];
 
-/*
-    // Use Node to get the cpu, since standard C# code doesn't run in sandbox
-    string nodeFile = Path.Combine(HttpRuntime.AppDomainAppPath, "cpu.js");
-    File.WriteAllText(nodeFile,"var os = require('os'); console.log(os.cpus()[0].model);");
-    var proc = new Process {
-        StartInfo = new ProcessStartInfo {
-            FileName = @"D:\Program Files (x86)\nodejs\8.4.0\node.exe",
-            Arguments = Path.Combine(HttpRuntime.AppDomainAppPath, "cpu.js"),
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            CreateNoWindow = true,
-            WorkingDirectory = HttpRuntime.AppDomainAppPath
-        }
-    };
-    proc.Start();
-    props["cpu"] = proc.StandardOutput.ReadLine();
-*/
+    AddCpuColumn();
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
