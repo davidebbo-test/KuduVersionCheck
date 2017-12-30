@@ -1,4 +1,5 @@
-﻿@using System.Reflection;
+﻿@using System.Diagnostics;
+@using System.Reflection;
 
 @functions {
     Dictionary<string, string> props = new Dictionary<string, string>();
@@ -128,6 +129,22 @@
         @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", 
         "BuildLab", null);
     props["osversion"] = version.Split('.')[2];
+
+    // Use Node to get the cpu, since standard C# code doesn't run in sandbox
+    string nodeFile = Path.Combine(HttpRuntime.AppDomainAppPath, "cpu.js");
+    File.WriteAllText(nodeFile,"var os = require('os'); console.log(os.cpus()[0].model);");
+    var proc = new Process {
+        StartInfo = new ProcessStartInfo {
+            FileName = @"D:\Program Files (x86)\nodejs\8.4.0\node.exe",
+            Arguments = Path.Combine(HttpRuntime.AppDomainAppPath, "cpu.js"),
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true,
+            WorkingDirectory = HttpRuntime.AppDomainAppPath
+        }
+    };
+    proc.Start();
+    props["cpu"] = proc.StandardOutput.ReadLine();
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
