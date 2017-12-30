@@ -130,6 +130,7 @@
         "BuildLab", null);
     props["osversion"] = version.Split('.')[2];
 
+/*
     // Use Node to get the cpu, since standard C# code doesn't run in sandbox
     string nodeFile = Path.Combine(HttpRuntime.AppDomainAppPath, "cpu.js");
     File.WriteAllText(nodeFile,"var os = require('os'); console.log(os.cpus()[0].model);");
@@ -145,6 +146,7 @@
     };
     proc.Start();
     props["cpu"] = proc.StandardOutput.ReadLine();
+*/
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
