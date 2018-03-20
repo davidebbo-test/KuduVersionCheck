@@ -233,9 +233,12 @@
     var fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
     props["waws"] = fileVersionInfo.ProductVersion;
 
-    props["osversion"] = (string)Microsoft.Win32.Registry.GetValue(
+    // Looks like 14393.2005.amd64fre.rs1_release(somename).171205-2147
+    string version = (string)Microsoft.Win32.Registry.GetValue(
         @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", 
         "BuildLabEx", null);
+    var versionParts = version.Split('.');
+    props["osversion"] = versionParts[4] + " (" + versionParts[1] + ")";
 
     AddCpuColumn();
 
