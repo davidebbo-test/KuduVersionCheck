@@ -235,7 +235,7 @@
 
     string version = (string)Microsoft.Win32.Registry.GetValue(
         @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion", 
-        "BuildLab", null);
+        "BuildLabEx", null);
     props["osversion"] = version.Split('.')[2];
 
     AddCpuColumn();
@@ -245,7 +245,7 @@
     AddSiteExtension("MobileServicesDotNet", "ZuNet");
     AddSiteExtension("MobileServicesNode", "ZuNode");
     AddSiteExtension("MobileAppsManagement", "ZuManage");
-    AddSiteExtension("AzureJobs");
+    //AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
     //props["msd"] = File.Exists(@"D:\Program Files (x86)\SiteExtensions\MSDeploy\3.5.51024.2802\bin\Microsoft.Web.Deployment.dll").ToString();
     AddSiteExtension("DaaS");
@@ -263,6 +263,7 @@
     props["AIHttpMod"] = GetLatestVersionFromFolder(@"D:\Program Files\AppInsightsHttpModule");
     AddSiteExtension("PerformanceTesting", "perf");
     AddSiteExtension("AzureBotService", "bot", ignoreVerAndAbove: "2.0");
+    AddSiteExtension("QNAMaker");
 
 
     //props["pubdll"] = File.Exists(@"D:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll").ToString();
