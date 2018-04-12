@@ -1,0 +1,161 @@
+﻿@using System;
+@using System.Net.Http;
+@using System.Threading;
+@using System.Threading.Tasks;
+
+@functions {
+    /// To start Http request from this site to a given url for a duration
+    ///     GET /httptest.cshtml?action=start&url=<url>
+    /// optional:
+    ///     duration is a duration of the test in secs (default is 60).
+    ///     delay is a sleep in secs between each request (default is 5).
+    ///
+    /// To stop
+    ///     GET /httptest.cshtml?action=stop
+    ///
+    /// To get current test result
+    ///     GET /httptest.cshtml
+
+    static HttpResult lastResult = new HttpResult();
+    static bool isRunning = false;
+    static string action;
+    static DateTime testEndTime;
+    static string UserAgent = string.Format("{0}/{1}", Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"), "1.0.0");
+
+    class HttpResult
+    {
+        public HttpResult(HttpResult result = null)
+        {
+            if (result != null)
+            {
+                Url = result.Url;
+                Duration = result.Duration;
+                Delay = result.Delay;
+                TestStartTime = result.TestStartTime;
+            }
+        }
+
+        public string Url;
+        public int Duration;
+        public int Delay;
+        public string TestStartTime;
+        public string TestEndTime;
+        public string TestStatus;
+        public string RequestStatus;
+        public string RequestTime;
+        public int RequestLatency;
+    }
+
+    private static async Task HttpTest()
+    {
+        WebRequestHandler handler = new WebRequestHandler
+        {
+            ServerCertificateValidationCallback = delegate { return true; }
+        };
+
+        using (HttpClient client = new HttpClient(handler))
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+
+            while (action != "stop" && DateTime.UtcNow < testEndTime)
+            {
+                await HttpGet(client);
+
+                if (lastResult.Delay >= 0)
+                {
+                    await Task.Delay(lastResult.Delay * 1000);
+                }
+            }
+        }
+    }
+
+    private static async Task HttpGet(HttpClient client)
+    {
+        Exception exception = null;
+        HttpStatusCode statusCode = HttpStatusCode.OK;
+        DateTime startTime = DateTime.UtcNow;
+
+        try
+        {
+            using (var response = await client.GetAsync(lastResult.Url))
+            {
+                statusCode = response.StatusCode;
+            }
+        }
+        catch (Exception ex)
+        {
+            exception = ex;
+        }
+        finally
+        {
+            DateTime endTime = DateTime.UtcNow;
+            lastResult = new HttpResult(lastResult)
+            {
+                RequestStatus = exception != null ? exception.ToString() : statusCode.ToString(),
+                RequestTime = DateTimeToString(startTime),
+                RequestLatency = (int)(endTime - startTime).TotalMilliseconds
+            };
+        }
+    }
+
+    private static string DateTimeToString(DateTime dt)
+    {
+        return dt.ToString("yyyy-MM-ddTHH:mm:ss.fff");
+    }
+}
+
+@{
+    action = HttpContext.Current.Request.QueryString["action"];
+    string url = HttpContext.Current.Request.QueryString["url"];
+
+    if (action == "start" && !isRunning && !string.IsNullOrEmpty(url))
+    {
+        int duration = 0;
+        if (!int.TryParse(HttpContext.Current.Request.QueryString["duration"], out duration))
+        {
+            duration = 60;
+        }
+
+        int delay = 0;
+        if (!int.TryParse(HttpContext.Current.Request.QueryString["delay"], out delay))
+        {
+            delay = 5;
+        }
+
+        lastResult = new HttpResult
+        {
+            Url = url,
+            Duration = Math.Min(300, duration),
+            Delay = Math.Min(5, delay),
+            TestStartTime = DateTimeToString(DateTime.UtcNow),
+        };
+
+        testEndTime = DateTime.UtcNow.AddSeconds(lastResult.Duration);
+
+        Task.Run(async () =>
+        {
+            isRunning = true;
+            try
+            {
+                await HttpTest();
+            }
+            finally
+            {
+                lastResult.TestEndTime = DateTimeToString(DateTime.UtcNow);
+                isRunning = false;
+            }
+        });
+    }
+    else if (action == "stop" && isRunning)
+    {
+        for (int i = 0; i < 10 && lastResult.TestEndTime == null; ++i)
+        {
+            Thread.Sleep(500);
+        }
+    }
+
+    lastResult.TestStatus = isRunning ? "Running" : "Stopped";
+    Response.ContentType = "application/json";
+}
+
+@Html.Raw(Json.Encode(lastResult))
