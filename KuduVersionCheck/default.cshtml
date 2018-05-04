@@ -244,9 +244,9 @@
 
     AddSiteExtension("Kudu");
     AddSiteExtension("Monaco");
-    AddSiteExtension("MobileServicesDotNet", "ZuNet");
-    AddSiteExtension("MobileServicesNode", "ZuNode");
-    AddSiteExtension("MobileAppsManagement", "ZuManage");
+    //AddSiteExtension("MobileServicesDotNet", "ZuNet");
+    //AddSiteExtension("MobileServicesNode", "ZuNode");
+    //AddSiteExtension("MobileAppsManagement", "ZuManage");
     //AddSiteExtension("AzureJobs");
     AddSiteExtension("MSDeploy");
     //props["msd"] = File.Exists(@"D:\Program Files (x86)\SiteExtensions\MSDeploy\3.5.51024.2802\bin\Microsoft.Web.Deployment.dll").ToString();
@@ -266,6 +266,7 @@
     AddSiteExtension("PerformanceTesting", "perf");
     AddSiteExtension("AzureBotService", "bot", ignoreVerAndAbove: "2.0");
     AddSiteExtension("QNAMaker");
+    AddSiteExtension("InstrumentationEngine", "InstrEngine");
 
 
     //props["pubdll"] = File.Exists(@"D:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v14.0\Web\Microsoft.Web.Publishing.Tasks.dll").ToString();
@@ -281,12 +282,13 @@
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\SysWOW64\inetsrv\aspnetcore.dll");
     props["ancm"] = fileVersionInfo.FileVersion;
     
-    props["mds"] = GetLatestVersionFromFolder(@"D:\Program Files\Mds");
+    //props["mds"] = GetLatestVersionFromFolder(@"D:\Program Files\Mds");
 
     //props["Node4"] = GetLatestVersionFromFolder(nodeFolder, "5");
-    props["Node6"] = GetLatestVersionFromFolder(nodeFolder, "7");
+    //props["Node6"] = GetLatestVersionFromFolder(nodeFolder, "7");
     //props["Node7"] = GetLatestVersionFromFolder(nodeFolder, "8");
-    props["Node8"] = GetLatestVersionFromFolder(nodeFolder);
+    props["Node8"] = GetLatestVersionFromFolder(nodeFolder, "9");
+    props["Node10"] = GetLatestVersionFromFolder(nodeFolder);
     //props["npm1"] = GetLatestVersionFromFolder(npmFolder, "2");
     props["npm"] = GetLatestVersionFromFolder(npmFolder);
     //props["go"] = GetLatestVersionFromFolder(goFolder);
