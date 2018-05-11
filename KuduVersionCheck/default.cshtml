@@ -274,7 +274,8 @@
     //props["analysis"] = File.Exists(@"D:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v14.0\CodeAnalysis\fxcoptask.dll").ToString();
     props["core10"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App", "1.0.99");
     props["core11"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App", "1.1.99");
-    props["core20"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App");
+    props["core20"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App", "2.0.99");
+    props["core21"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\shared\Microsoft.NETCore.App");
     props["sdk"] = GetLatestVersionFromFolder(@"D:\Program Files (x86)\dotnet\sdk");
 
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
