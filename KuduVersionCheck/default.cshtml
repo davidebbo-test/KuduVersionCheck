@@ -336,7 +336,17 @@
     }
 
     props["CPUPerf$"] = GetCpuPerf().ToString();
-
+    
+    try {
+        var client = new System.Net.Http.HttpClient();
+        var response = client.GetAsync("http://api.shoplo.com/").Result;
+        props["httptest"] = response.StatusCode.ToString();
+    }
+    catch (Exception e)
+    {
+        props["httptest"] = e.Message;
+    }
+    
     //props["4.5.1 SDK"] = (File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.dll") &&
     //                     File.Exists(@"D:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.1\Accessibility.xml")).ToString();
 
