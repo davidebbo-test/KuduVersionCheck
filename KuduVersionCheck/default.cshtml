@@ -308,12 +308,12 @@
     Assembly a=null;
     try
     {
-        a = Assembly.Load("Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed");
+        a = Assembly.Load("System.Security.Cryptography.Algorithms, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
     }
     catch
     {
     }
-    //props["jsongate"] = (a != null).ToString();
+    props["crypt"] = (a != null).ToString();
 
     try
     {
