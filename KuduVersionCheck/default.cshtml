@@ -319,11 +319,11 @@
     try
     {
         File.WriteAllText(@"d:\home\dummy.txt", "Dummy file");
-        props["RootFile"] = "true";
+        props["RootFile"] = "writable";
     }
     catch (Exception e)
     {
-        props["RootFile"] = "false";
+        props["RootFile"] = "r/o";
     }
     
     try
