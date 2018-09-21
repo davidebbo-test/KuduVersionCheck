@@ -315,6 +315,17 @@
     }
     props["crypt"] = (a != null).ToString();
 
+    // Test id d:\home is writable
+    try
+    {
+        File.WriteAllText(@"d:\home\dummy.txt", "Dummy file");
+        props["RootFile"] = "true";
+    }
+    catch (Exception e)
+    {
+        props["RootFile"] = "false";
+    }
+    
     try
     {
         //props["en-SE"] = System.Globalization.CultureInfo.GetCultureInfo("en-SE").DisplayName;
@@ -365,7 +376,7 @@
 
     // Time is not that useful, so yanking it
     //props["time"] = File.GetCreationTimeUtc(mwhAssembly.Location).ToString();
-
+    
     Response.ContentType = "application/json";
 }
 
