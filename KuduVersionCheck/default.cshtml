@@ -322,7 +322,8 @@
     }
     props["crypt"] = (a != null).ToString();
 
-    // Test id d:\home is writable
+    // Test if d:\home is writable
+/*    
     try
     {
         File.WriteAllText(@"d:\home\dummy.txt", "Dummy file");
@@ -332,6 +333,7 @@
     {
         props["RootFile"] = "r/o";
     }
+*/
     
     try
     {
@@ -344,6 +346,7 @@
 
     props["FreeDSpace$"] = FormatBytes(GetTotalFreeSpace(@"D:\"));
 
+/*
     try
     {
         props["WritePerf$"] = GetWritePerf().ToString("0.00");
@@ -352,6 +355,7 @@
     {
         props["WritePerf$"] = "error";
     }
+*/
 
     //props["CPUPerf$"] = GetCpuPerf().ToString();
     
