@@ -289,7 +289,7 @@
     fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Program Files (x86)\iisnode\iisnode.dll");
     props["iisnode"] = fileVersionInfo.FileVersion;
     
-    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"D:\Windows\SysWOW64\inetsrv\aspnetcore.dll");
+    fileVersionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(@"C:\Windows\SysWOW64\inetsrv\aspnetcore.dll");
     props["ancm"] = fileVersionInfo.FileVersion;
     
     props["mds"] = GetLatestVersionFromFolder(@"D:\Program Files\Mds");
